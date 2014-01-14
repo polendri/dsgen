@@ -1,0 +1,205 @@
+# Default values for a card. If a card does not specify one of the options
+# below, it takes the default option specified here.
+#
+# DO NOT CHANGE THIS SECTION!
+#
+# It would invalidate the assumptions about default values made when the cards
+# that follow were defined, likely changing the card definitions in a way you
+# did not intend. Just use it as a reference for which options can be
+# specified, what they mean, and what their default values are.
+[DEFAULT]
+source          = Intrigue  # The expansion from which the card originates.
+                            # Must have one of the following values: Dominion,
+                            # Intrigue, Seaside, Alchemy, Prosperity,
+                            # Cornucopia, Hinterlands, DarkAges, Guilds,
+                            # EnvoyPromo, BlackMarketPromo, StashPromo,
+                            # WalledVillagePromo, GovernorPromo, Custom.
+
+cost            = 0         # The coin cost of the card, or Variable if its
+                            # cost is not fixed.
+
+potionCost      = 0         # The potion cost of the card.
+
+cardTypes       = [Action]  # List (i.e. of form "[item1, item2, ..., itemn])
+                            # containing any of the following values: Action,
+                            # Attack, Reaction, Duration, Treasure, Victory
+
+plusCards       = 0         # The number of additional cards this card provides
+                            # to its player, or Variable if the amount is not
+                            # fixed.
+
+plusActions     = 0         # The number of additional actions this card
+                            # provides to its player, or Variable if the amount
+                            # is not fixed.
+
+plusBuys        = 0         # The number of additional buys this card provides
+                            # to its player, or Variable if the amount is not
+                            # fixed.
+
+plusCoins       = 0         # The number of additional coins this card provides
+                            # to its player, or Variable if the amount is not
+                            # fixed.
+
+givesCurses     = False     # True if the card can give curses; False
+                            # otherwise.
+
+gainsCards      = False     # True if the card can gain give players cards
+                            # other than curses; False otherwise.
+
+trashesCards    = False     # True if the card can permit its user to trash
+                            # cards (other than itself); False otherwise.
+
+singleUse       = False     # True if the card is trashed after its first use;
+                            # False otherwise.
+
+complexity      = Medium    # One of Low, Medium, or High. "Low" complexity
+                            # indicates a card at one non-conditional special
+                            # instruction. "Medium" indicates that a card has
+                            # several special instructions, but they are
+                            # straightforward to interpret and execute. "High"
+                            # indicates that a card that either has complex,
+                            # multi-step decisions/instructions, or uses unique
+                            # features/mechanics such as special mats.
+
+# Feel free to add or modify cards from this point onwards. Define the name of
+# a card as a section (a line in square brackets, e.g. "[Cellar]"), followed
+# by lines each defining one of the options listed in the [DEFAULT] section
+# above (only options which differ from the option's default value need to be
+# specified)
+
+[Courtyard]
+cost = 2
+plusCards = 3
+complexity = Low
+
+[Pawn]
+cost = 2
+plusCards = Variable
+plusActions = Variable
+plusBuys = Variable
+plusCoins = Variable
+
+[Secret Chamber]
+cost = 2
+cardTypes = [Action, Reaction]
+plusCoins = Variable
+
+[Great Hall]
+cost = 3
+cardTypes = [Action, Victory]
+complexity = Low
+
+[Masquerade]
+cost = 3
+plusCards = 2
+trashesCards = True
+
+[Shanty Town]
+cost = 3
+plusAction = 2
+plusCards = Variable
+
+[Steward]
+cost = 3
+plusCards = Variable
+plusCoins = Variable
+trashesCards = True
+
+[Swindler]
+cost = 3
+cardTypes = [Action, Attack]
+plusCoins = 2
+
+[Wishing Well]
+cost = 3
+plusCards = 1
+plusActions = 1
+
+[Baron]
+cost = 4
+plusBuys = 1
+gainsCards = True
+
+[Bridge]
+cost = 4
+plusBuys = 1
+plusCards = 1
+
+[Conspirator]
+cost = 4
+plusCards = Variable
+plusActions = Variable
+plusBuys = 2
+
+[Coppersmith]
+cost = 4
+complexity = Low
+
+[Ironworks]
+cost = 4
+plusCards = Variable
+plusActions = Variable
+plusCoins = Variable
+gainsGards = True
+
+[Mining Village]
+cost = 4
+plusCards = 1
+plusActions = 2
+plusCoins = Variable
+singleUser = True
+
+[Scout]
+cost = 4
+plusActions = 1
+
+[Duke]
+cost = 5
+cardTypes = [Victory]
+complexity = Low
+
+[Minion]
+cost = 5
+cardTypes = [Action, Attack]
+plusActions = 1
+complexity = High
+
+[Saboteur]
+cost = 5
+cardTypes = [Action, Attack]
+complexity = High
+
+[Torturer]
+cost = 5
+cardTypes = [Action, Attack]
+plusCards = 3
+
+[Trading Post]
+cost = 5
+gainsCards = True
+trashesCards = True
+
+[Tribute]
+cost = 5
+plusCards = Variable
+plusActions = Variable
+plusCoins = Variable
+
+[Upgrade]
+cost = 5
+plusCards = 1
+plusActions = 1
+gainsCards = True
+trashesCards = True
+
+[Harem]
+cost = 6
+cardTypes = [Treasure, Victory]
+complexity = Low
+
+[Nobles]
+cost = 6
+cardTypes = [Action, Victory]
+plusCards = Variable
+plusActions = Variable
+complexity = Low
