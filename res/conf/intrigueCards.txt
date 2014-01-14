@@ -1,7 +1,7 @@
 # Default values for a card. If a card does not specify one of the options
 # below, it takes the default option specified here.
 #
-# DO NOT CHANGE THIS SECTION!
+# DO NOT CHANGE THIS SECTION! If you want to add/modify cards, scroll further.
 #
 # It would invalidate the assumptions about default values made when the cards
 # that follow were defined, likely changing the card definitions in a way you
@@ -18,9 +18,10 @@ source          = Intrigue  # The expansion from which the card originates.
 cost            = 0         # The coin cost of the card, or Variable if its
                             # cost is not fixed.
 
-potionCost      = 0         # The potion cost of the card.
+potionCost      = 0         # The potion cost of the card, or Variable if its
+                            # cost is not fixed.
 
-cardTypes       = [Action]  # List (i.e. of form "[item1, item2, ..., itemn])
+categories      = [Action]  # List (i.e. of form "[item1, item2, ..., itemn])
                             # containing any of the following values: Action,
                             # Attack, Reaction, Duration, Treasure, Victory
 
@@ -40,6 +41,12 @@ plusCoins       = 0         # The number of additional coins this card provides
                             # to its player, or Variable if the amount is not
                             # fixed.
 
+plusVPs         = 0         # The number of victory point tokens this card
+                            # provides, or Variable if the amount is not fixed.
+
+blocksAttacks   = False     # True if this card can nullify attacks (ex: Moat);
+                            # False otherwise.
+
 givesCurses     = False     # True if the card can give curses; False
                             # otherwise.
 
@@ -49,17 +56,21 @@ gainsCards      = False     # True if the card can gain give players cards
 trashesCards    = False     # True if the card can permit its user to trash
                             # cards (other than itself); False otherwise.
 
-singleUse       = False     # True if the card is trashed after its first use;
-                            # False otherwise.
+trashesItself   = False     # True if the card can permit its user to trash
+                            # the card itself; False otherwise.
 
-complexity      = Medium    # One of Low, Medium, or High. "Low" complexity
-                            # indicates a card at one non-conditional special
-                            # instruction. "Medium" indicates that a card has
-                            # several special instructions, but they are
-                            # straightforward to interpret and execute. "High"
-                            # indicates that a card that either has complex,
-                            # multi-step decisions/instructions, or uses unique
-                            # features/mechanics such as special mats.
+interactive     = False     # True if playing the card involves interaction
+                            # with other players; False otherwise.
+
+complexity      = Medium    # One of Low, Medium, or High, indicating how
+                            # complicated it is to follow the card's
+                            # instructions. "Low" cards have at most a single
+                            # command or decision; "Medium" cards may have
+                            # multiple instructions or decisions, but are
+                            # still relatively straightforward to resolve;
+                            # "High" cards have many complicated instructions
+                            # and decisions, or involve specialized mechanics
+                            # such as mats.
 
 # Feel free to add or modify cards from this point onwards. Define the name of
 # a card as a section (a line in square brackets, e.g. "[Cellar]"), followed
@@ -81,18 +92,21 @@ plusCoins = Variable
 
 [Secret Chamber]
 cost = 2
-cardTypes = [Action, Reaction]
+categories = [Action, Reaction]
 plusCoins = Variable
 
 [Great Hall]
 cost = 3
-cardTypes = [Action, Victory]
+categories = [Action, Victory]
+plusCards = 1
+plusActions = 1
 complexity = Low
 
 [Masquerade]
 cost = 3
 plusCards = 2
 trashesCards = True
+interactive = True
 
 [Shanty Town]
 cost = 3
@@ -107,8 +121,9 @@ trashesCards = True
 
 [Swindler]
 cost = 3
-cardTypes = [Action, Attack]
+categories = [Action, Attack]
 plusCoins = 2
+interactive = True
 
 [Wishing Well]
 cost = 3
@@ -122,8 +137,8 @@ gainsCards = True
 
 [Bridge]
 cost = 4
-plusBuys = 1
 plusCards = 1
+plusBuys = 1
 
 [Conspirator]
 cost = 4
@@ -147,7 +162,7 @@ cost = 4
 plusCards = 1
 plusActions = 2
 plusCoins = Variable
-singleUser = True
+trashesItself = True
 
 [Scout]
 cost = 4
@@ -155,24 +170,27 @@ plusActions = 1
 
 [Duke]
 cost = 5
-cardTypes = [Victory]
+categories = [Victory]
 complexity = Low
 
 [Minion]
 cost = 5
-cardTypes = [Action, Attack]
+categories = [Action, Attack]
 plusActions = 1
+interactive = True
 complexity = High
 
 [Saboteur]
 cost = 5
-cardTypes = [Action, Attack]
+categories = [Action, Attack]
+interactive = True
 complexity = High
 
 [Torturer]
 cost = 5
-cardTypes = [Action, Attack]
+categories = [Action, Attack]
 plusCards = 3
+interactive = True
 
 [Trading Post]
 cost = 5
@@ -184,6 +202,8 @@ cost = 5
 plusCards = Variable
 plusActions = Variable
 plusCoins = Variable
+interactive = True
+complexity = High
 
 [Upgrade]
 cost = 5
@@ -194,12 +214,12 @@ trashesCards = True
 
 [Harem]
 cost = 6
-cardTypes = [Treasure, Victory]
+categories = [Treasure, Victory]
 complexity = Low
 
 [Nobles]
 cost = 6
-cardTypes = [Action, Victory]
+categories = [Action, Victory]
 plusCards = Variable
 plusActions = Variable
 complexity = Low

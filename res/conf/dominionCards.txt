@@ -1,7 +1,7 @@
 # Default values for a card. If a card does not specify one of the options
 # below, it takes the default option specified here.
 #
-# DO NOT CHANGE THIS SECTION!
+# DO NOT CHANGE THIS SECTION! If you want to add/modify cards, scroll further.
 #
 # It would invalidate the assumptions about default values made when the cards
 # that follow were defined, likely changing the card definitions in a way you
@@ -21,7 +21,7 @@ cost            = 0         # The coin cost of the card, or Variable if its
 potionCost      = 0         # The potion cost of the card, or Variable if its
                             # cost is not fixed.
 
-cardTypes       = [Action]  # List (i.e. of form "[item1, item2, ..., itemn])
+categories      = [Action]  # List (i.e. of form "[item1, item2, ..., itemn])
                             # containing any of the following values: Action,
                             # Attack, Reaction, Duration, Treasure, Victory
 
@@ -41,6 +41,12 @@ plusCoins       = 0         # The number of additional coins this card provides
                             # to its player, or Variable if the amount is not
                             # fixed.
 
+plusVPs         = 0         # The number of victory point tokens this card
+                            # provides, or Variable if the amount is not fixed.
+
+blocksAttacks   = False     # True if this card can nullify attacks (ex: Moat);
+                            # False otherwise.
+
 givesCurses     = False     # True if the card can give curses; False
                             # otherwise.
 
@@ -52,6 +58,9 @@ trashesCards    = False     # True if the card can permit its user to trash
 
 trashesItself   = False     # True if the card can permit its user to trash
                             # the card itself; False otherwise.
+
+interactive     = False     # True if playing the card involves interaction
+                            # with other players; False otherwise.
 
 complexity      = Low       # One of Low, Medium, or High, indicating how
                             # complicated it is to follow the card's
@@ -80,8 +89,9 @@ trashesCards = True
 
 [Moat]
 cost = 2
-cardTypes = [Action, Reaction]
+categories = [Action, Reaction]
 plusCards = 2
+blocksAttacks = True
 
 [Chancellor]
 cost = 3
@@ -103,8 +113,9 @@ gainsCards = True
 
 [Bureaucrat]
 cost = 4
-cardTypes = [Action, Attack]
+categories = [Action, Attack]
 gainsCards = True
+interactive = True
 complexity = Medium
 
 [Feast]
@@ -114,12 +125,13 @@ trashesItself = True
 
 [Gardens]
 cost = 4
-cardTypes = [Victory]
+categories = [Victory]
 
 [Militia]
 cost = 4
-cardTypes = [Action, Attack]
+categories = [Action, Attack]
 plusCoins = 2
+interactive = True
 complexity = Medium
 
 [Moneylender]
@@ -140,15 +152,17 @@ plusCards = 3
 
 [Spy]
 cost = 4
-cardTypes = [Action, Attack]
+categories = [Action, Attack]
 plusCards = 1
 plusActions = 1
+interactive = True
 complexity = Medium
 
 [Thief]
 cost = 4
-cardTypes = [Action, Attack]
+categories = [Action, Attack]
 gainsCards = True
+interactive = True
 complexity = Medium
 
 [Throne Room]
@@ -159,6 +173,7 @@ complexity = Medium
 cost = 5
 plusCards = 4
 plusBuys = 1
+interactive = True
 
 [Festival]
 cost = 5
@@ -191,9 +206,10 @@ complexity = Medium
 
 [Witch]
 cost = 5
-cardTypes = [Action, Attack]
+categories = [Action, Attack]
 plusCards = 2
 givesCurses = True
+interactive = True
 
 [Adventurer]
 cost = 6
