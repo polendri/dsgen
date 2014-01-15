@@ -1,0 +1,225 @@
+[DEFAULT]
+
+# Default values for a card. If a card does not specify one of the options
+# below, it takes the default option specified here.
+#
+# DO NOT CHANGE THIS SECTION! If you want to add/modify cards, scroll further.
+#
+# It would invalidate the assumptions about default values made when the cards
+# that follow were defined, likely changing the card definitions in a way you
+# did not intend. Just use it as a reference for which options can be
+# specified, what they mean, and what their default values are.
+
+# The expansion from which the card originates. Must have one of the following
+# values: Dominion, Intrigue, Seaside, Alchemy, Prosperity, Cornucopia,
+# Hinterlands, DarkAges, Guilds, EnvoyPromo, BlackMarketPromo, StashPromo,
+# WalledVillagePromo, GovernorPromo, Custom.
+source          = Dominion
+
+# The coin cost of the card, or Variable if its cost is not fixed.
+cost            = 0
+
+# The potion cost of the card, or Variable if its cost is not fixed.
+potionCost      = 0
+
+# List (i.e. of form "[item1, item2, ..., itemn]") containing any of the
+# following values: Action, Attack, Reaction, Duration, Treasure, Victory,
+# Looter
+categories      = [Action]
+
+# The number of additional cards this card provides to its player, or Variable
+# if the amount is not fixed.
+plusCards       = 0
+
+# The number of additional actions this card provides to its player, or
+# Variable if the amount is not fixed.
+plusActions     = 0
+
+# The number of additional buys this card provides to its player, or Variable
+# if the amount is not fixed.
+plusBuys        = 0
+
+plusCoins       = 0
+# The number of additional coins this card provides to its player, or Variable
+# if the amount is not fixed.
+
+# The number of victory point tokens this card provides, or Variable if the
+# amount is not fixed.
+plusVPs         = 0
+
+# True if this card can nullify attacks (ex: Moat); False otherwise.
+blocksAttacks   = False
+
+# True if the card can give curses; False otherwise.
+givesCurses     = False
+
+# True if the card can gain give players cards other than curses; False
+# otherwise.
+gainsCards      = False
+
+# True if the card can permit its user to trash cards (other than itself);
+# False otherwise.
+trashesCards    = False
+
+# True if the card can permit its user to trash the card itself; False
+# otherwise.
+trashesItself   = False
+
+# True if playing the card involves interaction with other players; False
+# otherwise.
+interactive     = False
+
+# One of Low, Medium, or High, indicating how complicated it is to follow the
+# card's instructions. "Low" cards have at most a single command or decision;
+# "Medium" cards may have multiple instructions or decisions, but are still
+# relatively straightforward to resolve; "High" cards have many complicated
+# instructions and decisions, or involve specialized mechanics such as mats.
+complexity      = Low
+
+# END OF DEFAULT SECTION
+
+
+
+# Feel free to add or modify cards from this point onwards. Define the name of
+# a card as a section (a line in square brackets, e.g. "[Cellar]"), followed
+# by lines each defining one of the options listed in the [DEFAULT] section
+# above (only options which differ from the option's default value need to be
+# specified)
+
+[Cellar]
+cost = 2
+plusCards = Variable
+plusActions = 1
+
+[Chapel]
+cost = 2
+trashesCards = True
+
+[Moat]
+cost = 2
+categories = [Action, Reaction]
+plusCards = 2
+blocksAttacks = True
+
+[Chancellor]
+cost = 3
+plusCoins = 2
+
+[Village]
+cost = 3
+plusCards = 1
+plusActions = 2
+
+[Woodcutter]
+cost = 3
+plusBuys = 1
+plusCoins = 2
+
+[Workshop]
+cost = 3
+gainsCards = True
+
+[Bureaucrat]
+cost = 4
+categories = [Action, Attack]
+gainsCards = True
+interactive = True
+complexity = Medium
+
+[Feast]
+cost = 4
+gainsCards = True
+trashesItself = True
+
+[Gardens]
+cost = 4
+categories = [Victory]
+
+[Militia]
+cost = 4
+categories = [Action, Attack]
+plusCoins = 2
+interactive = True
+complexity = Medium
+
+[Moneylender]
+cost = 4
+plusCoins = Variable
+trashesCards = True
+complexity = Medium
+
+[Remodel]
+cost = 4
+gainsCards = True
+trashesCards = True
+complexity = Medium
+
+[Smithy]
+cost = 4
+plusCards = 3
+
+[Spy]
+cost = 4
+categories = [Action, Attack]
+plusCards = 1
+plusActions = 1
+interactive = True
+complexity = Medium
+
+[Thief]
+cost = 4
+categories = [Action, Attack]
+gainsCards = True
+interactive = True
+complexity = Medium
+
+[Throne Room]
+cost = 4
+complexity = Medium
+
+[Council Room]
+cost = 5
+plusCards = 4
+plusBuys = 1
+interactive = True
+
+[Festival]
+cost = 5
+plusActions = 2
+plusBuys = 1
+plusCoins = 2
+
+[Laboratory]
+cost = 5
+plusCards = 2
+plusActions = 1
+
+[Library]
+cost = 5
+plusCards = Variable
+complexity = Medium
+
+[Market]
+cost = 5
+plusCards = 1
+plusActions = 1
+plusBuys = 1
+plusCoins = 1
+
+[Mine]
+cost = 5
+gainsCards = True
+trashesCards = True
+complexity = Medium
+
+[Witch]
+cost = 5
+categories = [Action, Attack]
+plusCards = 2
+givesCurses = True
+interactive = True
+
+[Adventurer]
+cost = 6
+complexity = Medium
+

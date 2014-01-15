@@ -1,0 +1,293 @@
+[DEFAULT]
+
+# Default values for a card. If a card does not specify one of the options
+# below, it takes the default option specified here.
+#
+# DO NOT CHANGE THIS SECTION! If you want to add/modify cards, scroll further.
+#
+# It would invalidate the assumptions about default values made when the cards
+# that follow were defined, likely changing the card definitions in a way you
+# did not intend. Just use it as a reference for which options can be
+# specified, what they mean, and what their default values are.
+
+# The expansion from which the card originates. Must have one of the following
+# values: Dominion, Intrigue, Seaside, Alchemy, Prosperity, Cornucopia,
+# Hinterlands, DarkAges, Guilds, EnvoyPromo, BlackMarketPromo, StashPromo,
+# WalledVillagePromo, GovernorPromo, Custom.
+source          = DarkAges
+
+# The coin cost of the card, or Variable if its cost is not fixed.
+cost            = 0
+
+# The potion cost of the card, or Variable if its cost is not fixed.
+potionCost      = 0
+
+# List (i.e. of form "[item1, item2, ..., itemn]") containing any of the
+# following values: Action, Attack, Reaction, Duration, Treasure, Victory,
+# Looter
+categories      = [Action]
+
+# The number of additional cards this card provides to its player, or Variable
+# if the amount is not fixed.
+plusCards       = 0
+
+# The number of additional actions this card provides to its player, or
+# Variable if the amount is not fixed.
+plusActions     = 0
+
+# The number of additional buys this card provides to its player, or Variable
+# if the amount is not fixed.
+plusBuys        = 0
+
+plusCoins       = 0
+# The number of additional coins this card provides to its player, or Variable
+# if the amount is not fixed.
+
+# The number of victory point tokens this card provides, or Variable if the
+# amount is not fixed.
+plusVPs         = 0
+
+# True if this card can nullify attacks (ex: Moat); False otherwise.
+blocksAttacks   = False
+
+# True if the card can give curses; False otherwise.
+givesCurses     = False
+
+# True if the card can gain give players cards other than curses; False
+# otherwise.
+gainsCards      = False
+
+# True if the card can permit its user to trash cards (other than itself);
+# False otherwise.
+trashesCards    = False
+
+# True if the card can permit its user to trash the card itself; False
+# otherwise.
+trashesItself   = False
+
+# True if playing the card involves interaction with other players; False
+# otherwise.
+interactive     = False
+
+# One of Low, Medium, or High, indicating how complicated it is to follow the
+# card's instructions. "Low" cards have at most a single command or decision;
+# "Medium" cards may have multiple instructions or decisions, but are still
+# relatively straightforward to resolve; "High" cards have many complicated
+# instructions and decisions, or involve specialized mechanics such as mats.
+complexity      = High
+
+# END OF DEFAULT SECTION
+
+
+
+# Feel free to add or modify cards from this point onwards. Define the name of
+# a card as a section (a line in square brackets, e.g. "[Cellar]"), followed
+# by lines each defining one of the options listed in the [DEFAULT] section
+# above (only options which differ from the option's default value need to be
+# specified)
+
+[Poor House]
+cost = 1
+plusCoins = Variable
+complexity = Medium
+
+[Beggar]
+cost = 2
+categories = [Action, Reaction]
+gainsCards = True
+
+[Squire]
+cost = 2
+plusActions = Variable
+plusBuys = Variable
+plusCoins = 1
+gainsCards = True
+
+[Vagrant]
+cost = 2
+plusCards = 1
+plusActions = 1
+complexity = Medium
+
+[Forager]
+cost = 3
+plusActions = 1
+plusBuys = 1
+plusCoins = Variable
+trashesCards = True
+complexity = Medium
+
+[Hermit]
+cost = 3
+gainsCards = True
+trashesCards = True
+
+[Market Square]
+cost = 3
+categories = [Action, Reaction]
+plusCards = 1
+plusActions = 1
+plusBuys = 1
+gainsCards = True
+
+[Sage]
+cost = 3
+plusActions = 1
+complexity = Medium
+
+[Storeroom]
+cost = 3
+plusCards = Variable
+plusBuys = 1
+plusCoins = Variable
+
+[Urchin]
+cost = 3
+categories = [Action, Attack]
+plusCards = 1
+plusActions = 1
+interactive = True
+
+[Armory]
+cost = 4
+gainsCards = True
+complexity = Low
+
+[Death Cart]
+cost = 4
+categories = [Action, Looter]
+plusCoins = 5
+
+[Feodum]
+cost = 4
+categories = [Victory]
+gainsCards = True
+complexity = Medium
+
+[Fortress]
+cost = 4
+plusCards = 1
+plusActions = 2
+complexity = Medium
+
+[Ironmonger]
+cost = 4
+plusCards = Variable
+plusActions = Variable
+plusCoins = Variable
+
+[Marauder]
+cost = 4
+categories = [Action, Attack, Looter]
+gainsCards = True
+interactive = True
+
+[Procession]
+cost = 4
+gainsCards = True
+trashesCards = True
+
+[Rats]
+cost = 4
+plusCards = 1
+plusActions = 1
+trashesCards = True
+
+[Scavenger]
+cost = 4
+plusCoins = 2
+complexity = Medium
+
+[Wandering Minstrel]
+cost = 4
+plusCards = 1
+plusActions = 2
+complexity = Medium
+
+[Band of Misfits]
+cost = 5
+
+[Bandit Camp]
+cost = 5
+plusCards = 1
+plusActions = 2
+gainsCards = True
+complexity = Medium
+
+[Catacombs]
+cost = 5
+plusCards = 3
+complexity = Medium
+
+[Count]
+cost = 5
+plusCoins = True
+gainsCards = True
+trashesCards = True
+
+[Counterfeit]
+cost = 5
+categories = [Treasure]
+plusBuys = 1
+trashesCards = True
+complexity = Medium
+
+[Cultist]
+cost = 5
+categories = [Action, Attack, Looter]
+plusCards = 2
+interactive = True
+
+[Graverobber]
+cost = 5
+gainsCards = True
+trashesCards = True
+
+[Junk Dealer]
+cost = 5
+plusCards = 1
+plusActions = 1
+plusCoins = 1
+trashesCards = True
+complexity = Low
+
+[Knights]
+cost = 5
+complexity = High
+
+[Mystic]
+cost = 5
+plusActions = 1
+plusCoins = 2
+complexity = Medium
+
+[Pillage]
+cost = 5
+categories = [Action, Attack]
+gainsCards = True
+trashesItself = True
+interactive = True
+
+[Rebuild]
+cost = 5
+plusActions = 1
+gainsCards = True
+trashesCards = True
+
+[Rogue]
+cost = 5
+categories = [Action, Attack]
+plusCoins = 2
+gainsCards = True
+interactive = True
+
+[Altar]
+cost = 6
+gainsCards = True
+trashesCards = True
+complexity = Low
+
+[Hunting Grounds]
+cost = 6
+plusCards = 4
+complexity = Medium

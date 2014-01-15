@@ -1,0 +1,241 @@
+[DEFAULT]
+
+# Default values for a card. If a card does not specify one of the options
+# below, it takes the default option specified here.
+#
+# DO NOT CHANGE THIS SECTION! If you want to add/modify cards, scroll further.
+#
+# It would invalidate the assumptions about default values made when the cards
+# that follow were defined, likely changing the card definitions in a way you
+# did not intend. Just use it as a reference for which options can be
+# specified, what they mean, and what their default values are.
+
+# The expansion from which the card originates. Must have one of the following
+# values: Dominion, Intrigue, Seaside, Alchemy, Prosperity, Cornucopia,
+# Hinterlands, DarkAges, Guilds, EnvoyPromo, BlackMarketPromo, StashPromo,
+# WalledVillagePromo, GovernorPromo, Custom.
+source          = Hinterlands
+
+# The coin cost of the card, or Variable if its cost is not fixed.
+cost            = 0
+
+# The potion cost of the card, or Variable if its cost is not fixed.
+potionCost      = 0
+
+# List (i.e. of form "[item1, item2, ..., itemn]") containing any of the
+# following values: Action, Attack, Reaction, Duration, Treasure, Victory,
+# Looter
+categories      = [Action]
+
+# The number of additional cards this card provides to its player, or Variable
+# if the amount is not fixed.
+plusCards       = 0
+
+# The number of additional actions this card provides to its player, or
+# Variable if the amount is not fixed.
+plusActions     = 0
+
+# The number of additional buys this card provides to its player, or Variable
+# if the amount is not fixed.
+plusBuys        = 0
+
+plusCoins       = 0
+# The number of additional coins this card provides to its player, or Variable
+# if the amount is not fixed.
+
+# The number of victory point tokens this card provides, or Variable if the
+# amount is not fixed.
+plusVPs         = 0
+
+# True if this card can nullify attacks (ex: Moat); False otherwise.
+blocksAttacks   = False
+
+# True if the card can give curses; False otherwise.
+givesCurses     = False
+
+# True if the card can gain give players cards other than curses; False
+# otherwise.
+gainsCards      = False
+
+# True if the card can permit its user to trash cards (other than itself);
+# False otherwise.
+trashesCards    = False
+
+# True if the card can permit its user to trash the card itself; False
+# otherwise.
+trashesItself   = False
+
+# True if playing the card involves interaction with other players; False
+# otherwise.
+interactive     = False
+
+# One of Low, Medium, or High, indicating how complicated it is to follow the
+# card's instructions. "Low" cards have at most a single command or decision;
+# "Medium" cards may have multiple instructions or decisions, but are still
+# relatively straightforward to resolve; "High" cards have many complicated
+# instructions and decisions, or involve specialized mechanics such as mats.
+complexity      = Medium
+
+# END OF DEFAULT SECTION
+
+
+
+# Feel free to add or modify cards from this point onwards. Define the name of
+# a card as a section (a line in square brackets, e.g. "[Cellar]"), followed
+# by lines each defining one of the options listed in the [DEFAULT] section
+# above (only options which differ from the option's default value need to be
+# specified)
+
+[Crossroads]
+cost = 2
+plusCards = Variable
+plusActions = Variable
+
+[Duchess]
+cost = 2
+plusCoins = 2
+interactive = True
+complexity = High
+
+[Fool's Gold]
+cost = 2
+categories = [Treasure, Reaction]
+gainsCards = True
+complexity = High
+
+[Develop]
+cost = 3
+gainsCards = True
+trashesCards = True
+complexity = High
+
+[Oasis]
+cost = 3
+plusCards = 1
+plusActions = 1
+plusCoins = 1
+
+[Oracle]
+cost = 3
+categories = [Action, Attack]
+plusCards = 2
+interactive = True
+
+[Scheme]
+cost = 3
+plusCards = True
+plusActions = True
+complexity = High
+
+[Tunnel]
+cost = 3
+categories = [Victory, Reaction]
+gainsCards = True
+
+[Jack of All Trades]
+cost = 4
+gainsCards = True
+trashesCards = True
+complexity = High
+
+[Noble Brigand]
+cost = 4
+categories = [Action, Attack]
+plusCoins = 1
+gainsCards = True
+interactive = True
+complexity = High
+
+[Nomad Camp]
+cost = 4
+plusBuys = 1
+plusCoins = 2
+complexity = Low
+
+[Silk Road]
+cost = 4
+categories = [Victory]
+complexity = Low
+
+[Spice Merchant]
+cost = 4
+plusCards = Variable
+plusActions = Variable
+plusBuys = Variable
+plusCoins = Variable
+trashesCards = True
+
+[Trader]
+cost = 4
+categories = [Action, Reaction]
+gainsCards = True
+trashesCards = True
+complexity = High
+
+[Cache]
+cost = 5
+categories = [Treasure]
+complexity = High
+
+[Cartographer]
+cost = 5
+plusCards = 1
+plusActions = 1
+
+[Embassy]
+cost = 5
+plusCards = 5
+interactive = True
+complexity = High
+
+[Haggler]
+cost = 5
+plusCoins = 2
+gainsCards = True
+
+[Highway]
+cost = 5
+plusCards = 1
+plusActions = 1
+
+[Ill-Gotten Gains]
+cost = 5
+categories = [Treasure]
+interactive = True
+complexity = High
+
+[Inn]
+cost = 5
+plusCards = 2
+plusActions = 2
+complexity = High
+
+[Mandarin]
+cost = 5
+plusCoins = 3
+complexity = High
+
+[Margrave]
+cost = 5
+categories = [Action, Attack]
+plusCards = 3
+plusBuys = 1
+interactive = True
+
+[Stables]
+cost = 5
+plusCards = Variable
+plusActions = Variable
+
+[Border Village]
+plusCards = 1
+plusActions = 2
+gainsCards = True
+complexity = High
+
+[Farmland]
+cost = 6
+categories = [Victory]
+gainsCards = True
+trashesCards = True
+complexity = High
