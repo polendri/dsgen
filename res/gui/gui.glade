@@ -6,27 +6,20 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-info</property>
   </object>
+  <object class="GtkImage" id="cardSelectionInfoImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-info</property>
+  </object>
   <object class="GtkImage" id="colonyInfoImage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-info</property>
   </object>
-  <object class="GtkListStore" id="colonyRuleListStore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">when Platinum is present</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">always</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">randomly</col>
-      </row>
-    </data>
+  <object class="GtkImage" id="costBalanceRuleInfoImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-info</property>
   </object>
   <object class="GtkImage" id="complexityFilterInfoImage">
     <property name="visible">True</property>
@@ -47,51 +40,17 @@
       </row>
     </data>
   </object>
-  <object class="GtkImage" id="costBalanceRuleInfoImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-info</property>
-  </object>
-  <object class="GtkImage" id="emphasisInfoImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-info</property>
-  </object>
-  <object class="GtkListStore" id="emphasisListStore">
+  <object class="GtkListStore" id="costBalanceRuleListStore">
     <columns>
       <!-- column-name gchararray1 -->
       <column type="gchararray"/>
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">random expansion</col>
+        <col id="0" translatable="yes">lightly</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Dominion</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Intrigue</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Seaside</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Alchemy</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Prosperity</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Cornucopia</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Hinterlands</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Dark Ages</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Guilds</col>
+        <col id="0" translatable="yes">heavily</col>
       </row>
     </data>
   </object>
@@ -420,6 +379,33 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkBox" id="box3">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkButton" id="cardSelectionInfoButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">cardSelectionInfoImage</property>
+                        <property name="always_show_image">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">5</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -433,7 +419,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkBox" id="box20">
+                  <object class="GtkBox" id="emphasisBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -539,7 +525,7 @@
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkBox" id="box15">
+                          <object class="GtkBox" id="complexityFilterBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -622,7 +608,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="box17">
+                          <object class="GtkBox" id="actionFilterBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -723,7 +709,7 @@
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkBox" id="box16">
+                          <object class="GtkBox" id="costBalanceRuleBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -756,7 +742,7 @@
                               <object class="GtkComboBox" id="costBalanceRuleComboBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="model">liststore1</property>
+                                <property name="model">costBalanceRuleListStore</property>
                                 <property name="active">0</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="cellrenderertext6"/>
@@ -794,7 +780,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="box8">
+                          <object class="GtkBox" id="reactionRuleBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -877,7 +863,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="box9">
+                          <object class="GtkBox" id="interactivityRuleBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -929,7 +915,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="box4">
+                          <object class="GtkBox" id="trasherRuleBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -1048,11 +1034,11 @@
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkBox" id="box21">
+                          <object class="GtkBox" id="colonyBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkCheckButton" id="colonyRuleCheckButton">
+                              <object class="GtkCheckButton" id="colonyCheckButton">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -1069,31 +1055,12 @@
                               <object class="GtkLabel" id="label4">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Include Colony </property>
+                                <property name="label" translatable="yes">Include Colony randomly</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">True</property>
                                 <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkComboBox" id="colonyRuleComboBox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="model">colonyRuleListStore</property>
-                                <property name="active">0</property>
-                                <child>
-                                  <object class="GtkCellRendererText" id="cellrenderertext2"/>
-                                  <attributes>
-                                    <attribute name="text">0</attribute>
-                                  </attributes>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">2</property>
                               </packing>
                             </child>
                             <child>
@@ -1119,11 +1086,11 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="box7">
+                          <object class="GtkBox" id="platinumBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkCheckButton" id="platinumRuleCheckButton">
+                              <object class="GtkCheckButton" id="platinumCheckButton">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -1149,7 +1116,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="platinumRuleComboBox">
+                              <object class="GtkComboBox" id="platinumComboBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="model">platinumRuleListStore</property>
@@ -1190,7 +1157,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="box3">
+                          <object class="GtkBox" id="sheltersBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -1333,6 +1300,49 @@
       </object>
     </child>
   </object>
+  <object class="GtkImage" id="emphasisInfoImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-info</property>
+  </object>
+  <object class="GtkListStore" id="emphasisListStore">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">random expansion</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Dominion</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Intrigue</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Seaside</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Alchemy</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Prosperity</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Cornucopia</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Hinterlands</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Dark Ages</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Guilds</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkImage" id="generateSetImage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -1343,20 +1353,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-info</property>
-  </object>
-  <object class="GtkListStore" id="liststore1">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">lightly</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">heavily</col>
-      </row>
-    </data>
   </object>
   <object class="GtkImage" id="platinumInfoImage">
     <property name="visible">True</property>
@@ -1370,7 +1366,7 @@
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">always</col>
+        <col id="0" translatable="yes">when Colony is present</col>
       </row>
       <row>
         <col id="0" translatable="yes">randomly</col>

@@ -1,9 +1,11 @@
+{-# LANGUAGE FlexibleContexts #-}
+
 module Dsgen.Cards where
 
 import Data.ConfigFile
 import Control.Monad.Error
 
-import Paths_dsgen
+-- import Paths_dsgen
 
 data CardSource = Dominion
                 | Intrigue
@@ -32,11 +34,13 @@ instance Read Amount where
                              ((i, s'):_) -> [(FixedAmount i, s')]
                              otherwise   -> []
 
-data CardType = Attack
-              | Reaction
-              | Duration
-              | Treasure
-              | Victory
+data CardCategory = Action
+                  | Attack
+                  | Reaction
+                  | Duration
+                  | Treasure
+                  | Victory
+                  | Looter
     deriving (Eq, Read, Show)
 
 data CardComplexity = Low | Medium | High
@@ -46,7 +50,7 @@ data Card = Card {
     cardSource        :: CardSource,
     cardCost          :: Amount,
     cardPotionCost    :: Amount,
-    cardTypes         :: [CardType],
+    cardCategories    :: [CardCategory],
     cardPlusCards     :: Amount,
     cardPlusActions   :: Amount,
     cardPlusBuys      :: Amount,
@@ -55,6 +59,7 @@ data Card = Card {
     cardGainsCards    :: Bool,
     cardTrashesCards  :: Bool,
     cardTrashesItself :: Bool,
+    cardInteractive   :: Bool,
     cardComplexity    :: CardComplexity
 } deriving (Eq, Show)
 
@@ -63,46 +68,46 @@ type CardError = String
 readCardFile :: String -> IO (Either CardError [Card])
 readCardFile path = do
     rv <- runErrorT $ do
-        -- dominionFilename <- join $ liftIO $ getDataFileName "res/conf/dominionCards.txt"
-        -- cp <- join $ liftIO $ readfile emptyCP dominionFilename
-        cp <- join $ liftIO $ readfile emptyCP "test.txt"
-        let cardNames = sections cp
-        foldM (f cp) [] cardNames
+        cp <- join $ liftIO $ readfile emptyCP path
+        let cp' = cp { optionxform = id }
+        let cardNames = sections cp'
+        foldM (f cp') [] cardNames
     either (\x -> return $ Left $ snd x) (\x -> return $ Right x) rv
-  where f cp cs name = do
-            -- c <- readCard cp name
-            -- return (c:cs)
-            return cs 
+  where f cp cs name = readCard cp name >>= \c -> return (c:cs)
 
--- readCard :: MonadError CPError m => ConfigParser -> String -> m Card
--- readCard cp name = do
---    sourceParsed      <- get cp name "source"        -- >>= readWithError
---    costParsed        <- get cp name "cost"          -- >>= readWithError
---    potionCostParsed  <- get cp name "potionCost"    -- >>= readWithError
---    cardTypesParsed   <- get cp name "cardTypes"     -- >>= readWithError
---    plusCardsParsed   <- get cp name "plusCards"     -- >>= readWithError
---    plusActionsParsed <- get cp name "plusActions"   -- >>= readWithError
---    plusBuysParsed    <- get cp name "plusBuys"      -- >>= readWithError
---    plusCoinsParsed   <- get cp name "plusCoins"     -- >>= readWithError
---    givesCurses       <- get cp name "givesCurses"   :: IO Bool
---    gainsCards        <- get cp name "gainsCards"    :: IO Bool
---    trashesCards      <- get cp name "trashesCards"  :: IO Bool
---    trashesItself     <- get cp name "trashesItself" :: IO Bool
---    complexityParsed  <- get cp name "complexity"    -- >>= readWithError
---    return Card {
---        cardSource        = sourceParsed,
---        cardCost          = costParsed,
---        cardPotionCost    = potionCostParsed,
---        cardTypes         = cardTypesParsed,
---        cardPlusCards     = plusCardsParsed,
---        cardPlusActions   = plusActionsParsed,
---        cardPlusBuys      = plusBuysParsed,
---        cardPlusCoins     = plusCoinsParsed,
---        cardGivesCurses   = givesCurses,
---        cardTrashesCards  = trashesCards,
---        cardTrashesItself = trashesItself,
---        cardComplexity    = complexityParsed
---    }
---  where readWithError s = case reads s of
---                              ((p, _):_) -> return p
---                              otherwise  -> throwError (ParseError "Parse error", s)
+readCard :: MonadError CPError m => ConfigParser -> SectionSpec -> m Card
+readCard cp name = do
+    source        <- get cp name "source"        >>= readWithError
+    cost          <- get cp name "cost"          >>= readWithError
+    potionCost    <- get cp name "potionCost"    >>= readWithError
+    categories    <- get cp name "categories"    >>= readWithError
+    plusCards     <- get cp name "plusCards"     >>= readWithError
+    plusActions   <- get cp name "plusActions"   >>= readWithError
+    plusBuys      <- get cp name "plusBuys"      >>= readWithError
+    plusCoins     <- get cp name "plusCoins"     >>= readWithError
+    givesCurses   <- get cp name "givesCurses"
+    gainsCards    <- get cp name "gainsCards"
+    trashesCards  <- get cp name "trashesCards"
+    trashesItself <- get cp name "trashesItself"
+    interactive   <- get cp name "interactive"
+    complexity    <- get cp name "complexity"
+    return Card {
+        cardSource        = source,
+        cardCost          = cost,
+        cardPotionCost    = potionCost,
+        cardCategories    = categories,
+        cardPlusCards     = plusCards,
+        cardPlusActions   = plusActions,
+        cardPlusBuys      = plusBuys,
+        cardPlusCoins     = plusCoins,
+        cardGivesCurses   = givesCurses,
+        cardGainsCards    = gainsCards,
+        cardTrashesCards  = trashesCards,
+        cardTrashesItself = trashesItself,
+        cardInteractive   = interactive,
+        cardComplexity    = complexity
+        }
+  where readWithError s = case reads s of
+                             ((p, _):_) -> return p
+                             otherwise  -> throwError (ParseError "Parse error", s)
+

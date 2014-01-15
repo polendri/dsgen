@@ -23,7 +23,8 @@ potionCost      = 0         # The potion cost of the card, or Variable if its
 
 categories      = [Action]  # List (i.e. of form "[item1, item2, ..., itemn])
                             # containing any of the following values: Action,
-                            # Attack, Reaction, Duration, Treasure, Victory
+                            # Attack, Reaction, Duration, Treasure, Victory,
+                            # Looter
 
 plusCards       = 0         # The number of additional cards this card provides
                             # to its player, or Variable if the amount is not

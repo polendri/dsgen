@@ -8,7 +8,7 @@
 # did not intend. Just use it as a reference for which options can be
 # specified, what they mean, and what their default values are.
 [DEFAULT]
-source          = Intrigue  # The expansion from which the card originates.
+source          = Dominion  # The expansion from which the card originates.
                             # Must have one of the following values: Dominion,
                             # Intrigue, Seaside, Alchemy, Prosperity,
                             # Cornucopia, Hinterlands, DarkAges, Guilds,
@@ -23,7 +23,8 @@ potionCost      = 0         # The potion cost of the card, or Variable if its
 
 categories      = [Action]  # List (i.e. of form "[item1, item2, ..., itemn])
                             # containing any of the following values: Action,
-                            # Attack, Reaction, Duration, Treasure, Victory
+                            # Attack, Reaction, Duration, Treasure, Victory,
+                            # Looter
 
 plusCards       = 0         # The number of additional cards this card provides
                             # to its player, or Variable if the amount is not
@@ -62,7 +63,7 @@ trashesItself   = False     # True if the card can permit its user to trash
 interactive     = False     # True if playing the card involves interaction
                             # with other players; False otherwise.
 
-complexity      = Medium    # One of Low, Medium, or High, indicating how
+complexity      = Low       # One of Low, Medium, or High, indicating how
                             # complicated it is to follow the card's
                             # instructions. "Low" cards have at most a single
                             # command or decision; "Medium" cards may have

@@ -1,3 +1,5 @@
+[DEFAULT]
+
 # Default values for a card. If a card does not specify one of the options
 # below, it takes the default option specified here.
 #
@@ -7,70 +9,76 @@
 # that follow were defined, likely changing the card definitions in a way you
 # did not intend. Just use it as a reference for which options can be
 # specified, what they mean, and what their default values are.
-[DEFAULT]
-source          = Dominion  # The expansion from which the card originates.
-                            # Must have one of the following values: Dominion,
-                            # Intrigue, Seaside, Alchemy, Prosperity,
-                            # Cornucopia, Hinterlands, DarkAges, Guilds,
-                            # EnvoyPromo, BlackMarketPromo, StashPromo,
-                            # WalledVillagePromo, GovernorPromo, Custom.
 
-cost            = 0         # The coin cost of the card, or Variable if its
-                            # cost is not fixed.
+# The expansion from which the card originates. Must have one of the following
+# values: Dominion, Intrigue, Seaside, Alchemy, Prosperity, Cornucopia,
+# Hinterlands, DarkAges, Guilds, EnvoyPromo, BlackMarketPromo, StashPromo,
+# WalledVillagePromo, GovernorPromo, Custom.
+source          = Dominion
 
-potionCost      = 0         # The potion cost of the card, or Variable if its
-                            # cost is not fixed.
+# The coin cost of the card, or Variable if its cost is not fixed.
+cost            = 0
 
-categories      = [Action]  # List (i.e. of form "[item1, item2, ..., itemn])
-                            # containing any of the following values: Action,
-                            # Attack, Reaction, Duration, Treasure, Victory
+# The potion cost of the card, or Variable if its cost is not fixed.
+potionCost      = 0
 
-plusCards       = 0         # The number of additional cards this card provides
-                            # to its player, or Variable if the amount is not
-                            # fixed.
+# List (i.e. of form "[item1, item2, ..., itemn]") containing any of the
+# following values: Action, Attack, Reaction, Duration, Treasure, Victory,
+# Looter
+categories      = [Action]
 
-plusActions     = 0         # The number of additional actions this card
-                            # provides to its player, or Variable if the amount
-                            # is not fixed.
+# The number of additional cards this card provides to its player, or Variable
+# if the amount is not fixed.
+plusCards       = 0
 
-plusBuys        = 0         # The number of additional buys this card provides
-                            # to its player, or Variable if the amount is not
-                            # fixed.
+# The number of additional actions this card provides to its player, or
+# Variable if the amount is not fixed.
+plusActions     = 0
 
-plusCoins       = 0         # The number of additional coins this card provides
-                            # to its player, or Variable if the amount is not
-                            # fixed.
+# The number of additional buys this card provides to its player, or Variable
+# if the amount is not fixed.
+plusBuys        = 0
 
-plusVPs         = 0         # The number of victory point tokens this card
-                            # provides, or Variable if the amount is not fixed.
+plusCoins       = 0
+# The number of additional coins this card provides to its player, or Variable
+# if the amount is not fixed.
 
-blocksAttacks   = False     # True if this card can nullify attacks (ex: Moat);
-                            # False otherwise.
+# The number of victory point tokens this card provides, or Variable if the
+# amount is not fixed.
+plusVPs         = 0
 
-givesCurses     = False     # True if the card can give curses; False
-                            # otherwise.
+# True if this card can nullify attacks (ex: Moat); False otherwise.
+blocksAttacks   = False
 
-gainsCards      = False     # True if the card can gain give players cards
-                            # other than curses; False otherwise.
+# True if the card can give curses; False otherwise.
+givesCurses     = False
 
-trashesCards    = False     # True if the card can permit its user to trash
-                            # cards (other than itself); False otherwise.
+# True if the card can gain give players cards other than curses; False
+# otherwise.
+gainsCards      = False
 
-trashesItself   = False     # True if the card can permit its user to trash
-                            # the card itself; False otherwise.
+# True if the card can permit its user to trash cards (other than itself);
+# False otherwise.
+trashesCards    = False
 
-interactive     = False     # True if playing the card involves interaction
-                            # with other players; False otherwise.
+# True if the card can permit its user to trash the card itself; False
+# otherwise.
+trashesItself   = False
 
-complexity      = Low       # One of Low, Medium, or High, indicating how
-                            # complicated it is to follow the card's
-                            # instructions. "Low" cards have at most a single
-                            # command or decision; "Medium" cards may have
-                            # multiple instructions or decisions, but are
-                            # still relatively straightforward to resolve;
-                            # "High" cards have many complicated instructions
-                            # and decisions, or involve specialized mechanics
-                            # such as mats.
+# True if playing the card involves interaction with other players; False
+# otherwise.
+interactive     = False
+
+# One of Low, Medium, or High, indicating how complicated it is to follow the
+# card's instructions. "Low" cards have at most a single command or decision;
+# "Medium" cards may have multiple instructions or decisions, but are still
+# relatively straightforward to resolve; "High" cards have many complicated
+# instructions and decisions, or involve specialized mechanics such as mats.
+complexity      = Low
+
+# END OF DEFAULT SECTION
+
+
 
 # Feel free to add or modify cards from this point onwards. Define the name of
 # a card as a section (a line in square brackets, e.g. "[Cellar]"), followed
