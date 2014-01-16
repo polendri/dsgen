@@ -1,10 +1,16 @@
-module Dsgen.SetGen where
+module Dsgen.SetGen
+    (
+    -- * Types
+    Emphasis(..),
+    SetGenOptions(..)
+    ) where
 
 import Paths_dsgen
 import Dsgen.Cards
 
+{- | Set generation emphasis. A set generated with an "emphasized" expansion
+will contain at least 4 cards from the emphasized expansion. -}
 data Emphasis = NoEmphasis
-              | RandomEmphasis
               | DominionEmphasis
               | IntrigueEmphasis
               | SeasideEmphasis
@@ -15,6 +21,9 @@ data Emphasis = NoEmphasis
               | DarkAgesEmphasis
               | GuildsEmphasis
 
+newtype Filter = [Card] -> [Card]
+
+{- | Contains options for customizing the generation of Kingdom card sets -}
 data SetGenOptions = SetGenOptions {
     setGenSources :: [CardSource],
     setGenEmphasis :: Emphasis,
@@ -24,3 +33,4 @@ data SetGenOptions = SetGenOptions {
     setGenPlatinumRule :: PlatinumRule,
     setGenSheltersRule :: SheltersRule
 }
+

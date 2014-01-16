@@ -15,6 +15,7 @@ data-files:          res/gui/gui.glade
 
 executable dsgen
   build-depends:       base ==4.6.*,
+                       containers ==0.5.*,
                        gtk3 ==0.12.*,
                        mtl ==2.*,
                        ConfigFile ==1.*
