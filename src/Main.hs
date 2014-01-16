@@ -6,9 +6,6 @@ import Dsgen.Cards
 
 main :: IO ()
 main = do
-    -- fn <- getDataFileName "res/conf/dominionCards.txt"
-    -- cfr <- readCardFile fn
-    -- either (\x -> print x) (\x -> print x) cfr
     initGUI
     builder <- builderNew
     gladeFilepath <- getDataFileName "res/gui/gui.glade"
@@ -18,16 +15,21 @@ main = do
     -- Hook up signals
     on window deleteEvent (liftIO mainQuit >> return False)
     generateSetButton <- builderGetObject builder castToButton "generateSetButton"
-    on generateSetButton buttonActivated generateSet
+    on generateSetButton buttonActivated $ generateSet builder
     outputTextView <- builderGetObject builder castToTextView "outputTextView"
 
     widgetShowAll window
     mainGUI
 
-generateSet :: IO ()
-generateSet = putStrLn "woo"
+generateSet :: Builder -> IO ()
+generateSet builder = displayOutput builder "woo"
 
-displayOutput :: IO ()
-displayOutput = do
-    buffer <- textBufferNew Nothing
+-- displayCardOutput :: Builder -> IO ()
+-- display
+
+displayOutput :: Builder -> String -> IO ()
+displayOutput builder s = do
+    otv <- builderGetObject builder castToTextView "outputTextView"
+    buf <- textViewGetBuffer otv
+    textBufferSetText buf s
     

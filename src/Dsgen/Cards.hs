@@ -5,7 +5,7 @@ module Dsgen.Cards where
 import Data.ConfigFile
 import Control.Monad.Error
 
--- import Paths_dsgen
+import Paths_dsgen
 
 data CardSource = Dominion
                 | Intrigue
@@ -63,16 +63,23 @@ data Card = Card {
     cardComplexity    :: CardComplexity
 } deriving (Eq, Show)
 
-type CardError = String
+cardFileNames :: IO [String]
+cardFileNames = mapM getPath files
+  where getPath s = getDataFileName $ "res/cards/" ++ s ++ ".txt"
+        files = ["dominion", "intrigue", "seaside", "alchemy", "prosperity",
+                 "cornucopia", "hinterlands", "darkages", "guilds", "custom"]
 
-readCardFile :: String -> IO (Either CardError [Card])
+readCardFiles :: ErrorT CPError IO [Card]
+readCardFiles = do
+    cfns <- liftIO cardFileNames
+    liftM concat $ mapM readCardFile cfns
+
+readCardFile :: String -> ErrorT CPError IO [Card]
 readCardFile path = do
-    rv <- runErrorT $ do
-        cp <- join $ liftIO $ readfile emptyCP path
-        let cp' = cp { optionxform = id }
-        let cardNames = sections cp'
-        foldM (f cp') [] cardNames
-    either (\x -> return $ Left $ snd x) (\x -> return $ Right x) rv
+    cp <- join $ liftIO $ readfile emptyCP path
+    let cp' = cp { optionxform = id }
+    let cardNames = sections cp'
+    foldM (f cp') [] cardNames
   where f cp cs name = readCard cp name >>= \c -> return (c:cs)
 
 readCard :: MonadError CPError m => ConfigParser -> SectionSpec -> m Card
