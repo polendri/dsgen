@@ -32,6 +32,6 @@ executable dsgen
                        gtk3 ==0.12.*,
                        mtl ==2.*,
                        random ==1.*
-  main-is:             Main.hs
+  main-is:             Dsgen/MainGUI.hs
   hs-source-dirs:      src
   -- other-modules:       

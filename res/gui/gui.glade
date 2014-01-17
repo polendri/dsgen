@@ -16,16 +16,6 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-info</property>
   </object>
-  <object class="GtkImage" id="costBalanceRuleInfoImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-info</property>
-  </object>
-  <object class="GtkImage" id="complexityFilterInfoImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-info</property>
-  </object>
   <object class="GtkListStore" id="complexityFilterListStore">
     <columns>
       <!-- column-name gchararray1 -->
@@ -39,6 +29,16 @@
         <col id="0" translatable="yes">high</col>
       </row>
     </data>
+  </object>
+  <object class="GtkImage" id="costBalanceRuleInfoImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-info</property>
+  </object>
+  <object class="GtkImage" id="complexityFilterInfoImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-info</property>
   </object>
   <object class="GtkListStore" id="costBalanceRuleListStore">
     <columns>
@@ -264,7 +264,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkCheckButton" id="enjoyCheckButton">
+                              <object class="GtkCheckButton" id="envoyCheckButton">
                                 <property name="label" translatable="yes">Envoy</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -784,7 +784,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkCheckButton" id="requireReactionRuleCheckButton">
+                              <object class="GtkCheckButton" id="reactionRuleCheckButton">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">False</property>
@@ -1161,7 +1161,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkCheckButton" id="shelterCheckButton">
+                              <object class="GtkCheckButton" id="sheltersCheckButton">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -1265,6 +1265,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="editable">False</property>
+                <property name="wrap_mode">word</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -1274,7 +1275,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="generateSetButton">
+              <object class="GtkButton" id="selectSetButton">
                 <property name="label" translatable="yes">Generate Set</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>

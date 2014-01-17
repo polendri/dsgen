@@ -101,7 +101,7 @@ complicated it is to follow the instructions of a card. Roughly speaking,
    overpayment effects, etc.
 -}
 data CardComplexity = Low | Medium | High
-    deriving (Eq, Read, Show)
+    deriving (Eq, Ord, Read, Show)
 
 {- | Given a card, returns a string containing the card's name followed by its
 source (in brackets) -}
