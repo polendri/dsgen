@@ -1,0 +1,6 @@
+- Implement rules
+- Implement the rest of the output
+- Display the rest of the output (not just a kingdom card list)
+- Properly display error output if generation fails
+- Implement the help buttons
+
