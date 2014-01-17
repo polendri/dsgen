@@ -12,13 +12,26 @@ category:            Utility
 build-type:          Simple
 cabal-version:       >=1.8
 data-files:          res/gui/gui.glade
+                     res/cards/dominion.txt
+                     res/cards/intrigue.txt
+                     res/cards/seaside.txt
+                     res/cards/alchemy.txt
+                     res/cards/prosperity.txt
+                     res/cards/cornucopia.txt
+                     res/cards/hinterlands.txt
+                     res/cards/darkAges.txt
+                     res/cards/guilds.txt
+                     res/cards/promos.txt
+                     res/cards/custom.txt
 
 executable dsgen
-  build-depends:       base ==4.6.*,
+  build-depends:       array ==0.4.*,
+                       base ==4.6.*,
+                       ConfigFile ==1.*,
                        containers ==0.5.*,
                        gtk3 ==0.12.*,
                        mtl ==2.*,
-                       ConfigFile ==1.*
+                       random ==1.*
   main-is:             Main.hs
   hs-source-dirs:      src
   -- other-modules:       
