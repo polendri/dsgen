@@ -115,7 +115,7 @@ cardFileNames :: IO [String]
 cardFileNames = mapM getPath files
   where getPath s = getDataFileName $ "res/cards/" ++ s ++ ".txt"
         files = ["dominion", "intrigue", "seaside", "alchemy", "prosperity",
-                 "cornucopia", "hinterlands", "darkages", "guilds", "custom"]
+                 "cornucopia", "hinterlands", "darkAges", "guilds", "custom"]
 
 -- | Reads all default card files, returning them all in a single list
 readCardFiles :: ErrorT CPError IO [Card]
@@ -168,5 +168,5 @@ readCard cp name = do
         }
   where readWithError s = case reads s of
                              ((p, _):_) -> return p
-                             otherwise  -> throwError (ParseError "Parse error", s)
+                             otherwise  -> throwError (ParseError $ "Parse error in section \"" ++ name ++ "\"", s)
 

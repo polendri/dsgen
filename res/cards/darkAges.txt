@@ -221,7 +221,7 @@ complexity = Medium
 
 [Count]
 cost = 5
-plusCoins = True
+plusCoins = Variable
 gainsCards = True
 trashesCards = True
 

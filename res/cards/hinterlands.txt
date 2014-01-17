@@ -123,8 +123,8 @@ interactive = True
 
 [Scheme]
 cost = 3
-plusCards = True
-plusActions = True
+plusCards = 1
+plusActions = 1
 complexity = High
 
 [Tunnel]

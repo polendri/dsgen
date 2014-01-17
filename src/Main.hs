@@ -20,16 +20,15 @@ main = do
     -- Load cards, displaying popup and quitting if this fails
     cardse <- runErrorT readCardFiles
     case cardse of
-        Left s -> errorQuit window $ show s
-        Right cs -> putStrLn "woo"
+        Left s -> startupErrorQuit $ show s
+        Right cs -> do
+            -- Hook up signals
+            generateSetButton <- builderGetObject builder castToButton "generateSetButton"
+            on generateSetButton buttonActivated $ generateSet builder
+            outputTextView <- builderGetObject builder castToTextView "outputTextView"
 
-    -- Hook up signals
-    generateSetButton <- builderGetObject builder castToButton "generateSetButton"
-    on generateSetButton buttonActivated $ generateSet builder
-    outputTextView <- builderGetObject builder castToTextView "outputTextView"
-
-    widgetShowAll window
-    mainGUI
+            widgetShowAll window
+            mainGUI
 
 generateSet :: Builder -> IO ()
 generateSet builder = do
@@ -44,6 +43,13 @@ displayOutput builder s = do
     otv <- builderGetObject builder castToTextView "outputTextView"
     buf <- textViewGetBuffer otv
     textBufferSetText buf s
+
+startupErrorQuit :: String -> IO ()
+startupErrorQuit s = do
+    dialog <- messageDialogNew Nothing [] MessageError ButtonsOk s
+    on dialog response (\rid -> liftIO mainQuit)
+    widgetShowAll dialog
+    mainGUI
 
 errorQuit :: Window -> String -> IO ()
 errorQuit w s = do
