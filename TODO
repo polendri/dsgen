@@ -1,4 +1,5 @@
-- Implement rules
+- Finish SetSelect unit tests
+- Fix bugs
 - Implement the rest of the output
 - Display the rest of the output (not just a kingdom card list)
 - Properly display error output if generation fails

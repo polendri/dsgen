@@ -19,8 +19,6 @@ module Dsgen.Cards
 import Data.ConfigFile
 import Control.Monad.Error
 
-import Paths_dsgen
-
 -- | Represents a Dominion Kingdom card.
 data Card = Card {
     cardName          :: String,         -- ^ The name of the card, as it appears on the card.
@@ -32,6 +30,7 @@ data Card = Card {
     cardPlusActions   :: Amount,         -- ^ The amount of actions gained by playing this card.
     cardPlusBuys      :: Amount,         -- ^ The amount of buys gained by playing this card.
     cardPlusCoins     :: Amount,         -- ^ The amount of coins gained by playing this card.
+    cardBlocksAttacks :: Bool,           -- ^ True iff the card can nullify attacks
     cardGivesCurses   :: Bool,           -- ^ True iff the card is able to give curses.
     cardGainsCards    :: Bool,           -- ^ True iff the card is able to gain cards for its user.
     cardTrashesCards  :: Bool,           -- ^ True iff the card is able to trash cards for its user.
@@ -108,20 +107,9 @@ source (in brackets) -}
 showCardName :: Card -> String
 showCardName c = (cardName c) ++ " (" ++ (show $ cardSource c) ++ ")"
 
-{- | Returns a list of filepaths to all predefined card files. This is in the
-'IO' monad since it uses cabal's "getDataFileName" function, which maps source
-paths to their corresponding packaged location. -}
-cardFileNames :: IO [String]
-cardFileNames = mapM getPath files
-  where getPath s = getDataFileName $ "res/cards/" ++ s ++ ".txt"
-        files = ["dominion", "intrigue", "seaside", "alchemy", "prosperity",
-                 "cornucopia", "hinterlands", "darkAges", "guilds", "custom"]
-
--- | Reads all default card files, returning them all in a single list
-readCardFiles :: ErrorT CPError IO [Card]
-readCardFiles = do
-    cfns <- liftIO cardFileNames
-    liftM concat $ mapM readCardFile cfns
+-- | Reads all specified card files, returning them all in a single list
+readCardFiles :: [String] -> ErrorT CPError IO [Card]
+readCardFiles cfns = liftM concat $ mapM readCardFile cfns
 
 -- | Reads the contents of a single card file into a list of 'Card's.
 readCardFile :: String -> ErrorT CPError IO [Card]
@@ -143,6 +131,7 @@ readCard cp name = do
     plusActions   <- get cp name "plusActions"   >>= readWithError
     plusBuys      <- get cp name "plusBuys"      >>= readWithError
     plusCoins     <- get cp name "plusCoins"     >>= readWithError
+    blocksAttacks <- get cp name "blocksAttacks"
     givesCurses   <- get cp name "givesCurses"
     gainsCards    <- get cp name "gainsCards"
     trashesCards  <- get cp name "trashesCards"
@@ -159,6 +148,7 @@ readCard cp name = do
         cardPlusActions   = plusActions,
         cardPlusBuys      = plusBuys,
         cardPlusCoins     = plusCoins,
+        cardBlocksAttacks = blocksAttacks,
         cardGivesCurses   = givesCurses,
         cardGainsCards    = gainsCards,
         cardTrashesCards  = trashesCards,

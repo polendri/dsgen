@@ -38,8 +38,7 @@ data GUIState  = GUIState {
     guiComplexityFilterValue   :: Int,
 
     -- Rules
-    guiCostBalanceRuleChecked   :: Bool,
-    guiCostBalanceRuleValue     :: Int,
+    guiCostVarietyRuleChecked   :: Bool,
     guiInteractivityRuleChecked :: Bool,
     guiReactionRuleChecked      :: Bool,
     guiReactionRuleValue        :: Int,
@@ -47,11 +46,11 @@ data GUIState  = GUIState {
     guiTrasherRuleValue         :: Int,
 
     -- Additions
-    guiColonyChecked    :: Bool,
-    guiPlatinumChecked  :: Bool,
-    guiPlatinumValue    :: Int,
-    guiSheltersChecked  :: Bool,
-    guiSheltersValue    :: Int,
+    guiColonyAdditionChecked    :: Bool,
+    guiPlatinumAdditionChecked  :: Bool,
+    guiPlatinumAdditionValue    :: Int,
+    guiSheltersAdditionChecked  :: Bool,
+    guiSheltersAdditionValue    :: Int,
 
     -- Widgets
     guiOutputTextView :: TextView
@@ -107,10 +106,8 @@ readGUIState builder = do
     complexityFilterValue       <- comboBoxGetActive complexityFilterComboBox
 
     -- Rules
-    costBalanceRuleCheckButton   <- builderGetObject builder castToCheckButton "costBalanceRuleCheckButton"
-    costBalanceRuleChecked       <- toggleButtonGetActive costBalanceRuleCheckButton
-    costBalanceRuleComboBox      <- builderGetObject builder castToComboBox "costBalanceRuleComboBox"
-    costBalanceRuleValue         <- comboBoxGetActive costBalanceRuleComboBox
+    costVarietyRuleCheckButton   <- builderGetObject builder castToCheckButton "costVarietyRuleCheckButton"
+    costVarietyRuleChecked       <- toggleButtonGetActive costVarietyRuleCheckButton
     interactivityRuleCheckButton <- builderGetObject builder castToCheckButton "interactivityRuleCheckButton"
     interactivityRuleChecked     <- toggleButtonGetActive interactivityRuleCheckButton
     reactionRuleCheckButton      <- builderGetObject builder castToCheckButton "reactionRuleCheckButton"
@@ -123,16 +120,16 @@ readGUIState builder = do
     trasherRuleValue             <- comboBoxGetActive trasherRuleComboBox
 
     -- Additions
-    colonyCheckButton   <- builderGetObject builder castToCheckButton "colonyCheckButton"
-    colonyChecked       <- toggleButtonGetActive colonyCheckButton
-    platinumCheckButton <- builderGetObject builder castToCheckButton "platinumCheckButton"
-    platinumChecked     <- toggleButtonGetActive platinumCheckButton
-    platinumComboBox    <- builderGetObject builder castToComboBox "platinumComboBox"
-    platinumValue       <- comboBoxGetActive platinumComboBox
-    sheltersCheckButton <- builderGetObject builder castToCheckButton "sheltersCheckButton"
-    sheltersChecked     <- toggleButtonGetActive sheltersCheckButton
-    sheltersComboBox    <- builderGetObject builder castToComboBox "sheltersComboBox"
-    sheltersValue       <- comboBoxGetActive sheltersComboBox
+    colonyAdditionCheckButton   <- builderGetObject builder castToCheckButton "colonyAdditionCheckButton"
+    colonyAdditionChecked       <- toggleButtonGetActive colonyAdditionCheckButton
+    platinumAdditionCheckButton <- builderGetObject builder castToCheckButton "platinumAdditionCheckButton"
+    platinumAdditionChecked     <- toggleButtonGetActive platinumAdditionCheckButton
+    platinumAdditionComboBox    <- builderGetObject builder castToComboBox "platinumAdditionComboBox"
+    platinumAdditionValue       <- comboBoxGetActive platinumAdditionComboBox
+    sheltersAdditionCheckButton <- builderGetObject builder castToCheckButton "sheltersAdditionCheckButton"
+    sheltersAdditionChecked     <- toggleButtonGetActive sheltersAdditionCheckButton
+    sheltersAdditionComboBox    <- builderGetObject builder castToComboBox "sheltersAdditionComboBox"
+    sheltersAdditionValue       <- comboBoxGetActive sheltersAdditionComboBox
 
     -- Widgets
     outputTextView <- builderGetObject builder castToTextView "outputTextView"
@@ -165,8 +162,7 @@ readGUIState builder = do
         guiComplexityFilterValue   = complexityFilterValue,
 
         -- Rules
-        guiCostBalanceRuleChecked   = costBalanceRuleChecked,
-        guiCostBalanceRuleValue     = costBalanceRuleValue,
+        guiCostVarietyRuleChecked   = costVarietyRuleChecked,
         guiInteractivityRuleChecked = interactivityRuleChecked,
         guiReactionRuleChecked      = reactionRuleChecked,
         guiReactionRuleValue        = reactionRuleValue,
@@ -174,34 +170,27 @@ readGUIState builder = do
         guiTrasherRuleValue         = trasherRuleValue,
 
         -- Additions
-        guiColonyChecked    = colonyChecked,
-        guiPlatinumChecked  = platinumChecked,
-        guiPlatinumValue    = platinumValue,
-        guiSheltersChecked  = sheltersChecked,
-        guiSheltersValue    = sheltersValue,
+        guiColonyAdditionChecked    = colonyAdditionChecked,
+        guiPlatinumAdditionChecked  = platinumAdditionChecked,
+        guiPlatinumAdditionValue    = platinumAdditionValue,
+        guiSheltersAdditionChecked  = sheltersAdditionChecked,
+        guiSheltersAdditionValue    = sheltersAdditionValue,
 
         -- Widgets
         guiOutputTextView = outputTextView
         }
 
 instance SetOptionable GUIState where
-    toSetSelectOptions gst = do
-        emphasis <- if not $ guiEmphasisChecked gst
-                    then return NoEmphasis
-                    else do
-                        let v = guiEmphasisValue gst
-                        v' <- if v == 0 then randomRIO (1,9) else return v
-                        return $ convertEmphasisValue v'
-        let filters = concat [
-             (if guiActionFilterChecked gst
-              then [\c -> (notElem Treasure (cardCategories c)) && (notElem Victory (cardCategories c))]
-              else []),
-             (if guiComplexityFilterChecked gst
-              then [\c -> cardComplexity c <= (convertComplexityFilterValue $ guiComplexityFilterValue gst)]
-              else [])
-             ]
-        return SetSelectOptions {
-            setSelectSources = concat [
+    toSetSelectOptions gst = SetSelectOptions {
+        setSelectSources = sources,
+        setSelectEmphasis = emphasis,
+        setSelectFilters = filters,
+        setSelectRules = rules,
+        setSelectColonyAddition = colony,
+        setSelectPlatinumAddition = platinum,
+        setSelectSheltersAddition = shelters
+        }
+      where sources = concat [
                 (if guiDominionChecked gst then [Dominion] else []),
                 (if guiIntrigueChecked gst then [Intrigue] else []),
                 (if guiAlchemyChecked gst then [Alchemy] else []),
@@ -217,30 +206,62 @@ instance SetOptionable GUIState where
                 (if guiStashChecked gst then [StashPromo] else []),
                 (if guiWalledVillageChecked gst then [WalledVillagePromo] else []),
                 (if guiCustomChecked gst then [Custom] else [])
-                ],
-            setSelectEmphasis = emphasis,
-            setSelectFilters = filters,
-            setSelectRules = [],
-            setSelectRandomColony = False,
-            setSelectPlatinumRule = NoPlatinum,
-            setSelectSheltersRule = NoShelters
-            }
-      where convertEmphasisValue v =
-                case v of
-                    1 -> DominionEmphasis
-                    2 -> IntrigueEmphasis
-                    3 -> SeasideEmphasis
-                    4 -> AlchemyEmphasis
-                    5 -> ProsperityEmphasis
-                    6 -> CornucopiaEmphasis
-                    7 -> HinterlandsEmphasis
-                    8 -> DarkAgesEmphasis
-                    9 -> GuildsEmphasis
-            convertComplexityFilterValue v =
-                case v of
-                    0 -> Low
-                    1 -> Medium
-                    2 -> High
+                ]
+            emphasis = if not $ guiEmphasisChecked gst
+                           then NoEmphasis
+                           else case guiEmphasisValue gst of
+                               0 -> RandomEmphasis
+                               1 -> DominionEmphasis
+                               2 -> IntrigueEmphasis
+                               3 -> SeasideEmphasis
+                               4 -> AlchemyEmphasis
+                               5 -> ProsperityEmphasis
+                               6 -> CornucopiaEmphasis
+                               7 -> HinterlandsEmphasis
+                               8 -> DarkAgesEmphasis
+                               9 -> GuildsEmphasis
+            filters = concat [
+                (if guiActionFilterChecked gst then [actionFilter] else []),
+                (if guiComplexityFilterChecked gst
+                 then [complexityFilter $ convertComplexityFilterValue $ guiComplexityFilterValue gst]
+                 else [])
+                ]
+            rules = concat [
+                (if guiReactionRuleChecked gst
+                 then [reactionRule $ convertReactionRuleValue $ guiReactionRuleValue gst]
+                 else []),
+                (if guiTrasherRuleChecked gst
+                 then [trasherRule $ convertTrasherRuleValue $ guiTrasherRuleValue gst]
+                 else []),
+                (if guiInteractivityRuleChecked gst
+                 then [interactivityRule 2]
+                 else []),
+                (if guiCostVarietyRuleChecked gst
+                 then [costVarietyRule]
+                 else [])
+                ]
+            colony = if guiColonyAdditionChecked gst then RandomColony else NoColony
+            platinum = if not $ guiPlatinumAdditionChecked gst
+                       then NoPlatinum
+                       else case guiPlatinumAdditionValue gst of
+                           0 -> RandomPlatinum
+                           1 -> PlatinumWithColony
+            shelters = if not $ guiSheltersAdditionChecked gst
+                       then NoShelters
+                       else case guiSheltersAdditionValue gst of
+                           0 -> SheltersWithDarkAges
+                           1 -> RandomShelters
+            convertComplexityFilterValue v = case v of
+                0 -> LowComplexityRuleOption
+                1 -> MediumComplexityRuleOption
+                2 -> HighComplexityRuleOption
+            convertReactionRuleValue v = case v of
+                0 -> MoatReaction
+                1 -> BlockerReaction
+                2 -> ReactionReaction
+            convertTrasherRuleValue v = case v of
+                0 -> CurseTrasher
+                1 -> AlwaysTrasher
 
 main :: IO ()
 main = do
@@ -253,7 +274,8 @@ main = do
     on window deleteEvent (liftIO mainQuit >> return False)
 
     -- Load cards, displaying popup and quitting if this fails
-    cardse <- runErrorT readCardFiles
+    cardfiles <- cardFileNames
+    cardse <- runErrorT $ readCardFiles cardFiles
     case cardse of
         Left s -> startupErrorQuit $ show s
         Right cs -> do
@@ -269,7 +291,7 @@ main = do
 selectAndDisplaySet :: Builder -> Window -> TextView -> [Card] -> IO ()
 selectAndDisplaySet b w tv cs = do
     gst <- readGUIState b
-    ssos <- toSetSelectOptions gst
+    let ssos = toSetSelectOptions gst
     sgre <- selectSet ssos cs
     case sgre of
         Left e -> displayError w e
@@ -304,4 +326,13 @@ displayError w s = do
                                s
     dialogRun dialog
     return ()
+
+{- | Returns a list of filepaths to all predefined card files. This is in the
+'IO' monad since it uses cabal's "getDataFileName" function, which maps source
+paths to their corresponding packaged location. -}
+cardFileNames :: IO [String]
+cardFileNames = mapM getPath files
+  where getPath s = getDataFileName $ "res/cards/" ++ s ++ ".txt"
+        files = ["dominion", "intrigue", "seaside", "alchemy", "prosperity",
+                 "cornucopia", "hinterlands", "darkAges", "guilds", "custom"]
 
