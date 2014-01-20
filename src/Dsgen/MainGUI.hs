@@ -297,7 +297,10 @@ selectAndDisplaySet b w tv cs = do
         Left e -> displayOutput tv e
         Right sgr -> displayCardOutput tv $ setKingdomCards sgr
 
--- | Displays a list of prettyf-formatted card names in a TextView.
+-- | Displays a full set selection
+-- TODO
+
+-- | Displays a list of pretty-formatted card names in a TextView.
 displayCardOutput :: TextView -> [Card] -> IO ()
 displayCardOutput tv cs = displayOutput tv $ intercalate ", " $ sort $ map showCardName cs
 
@@ -335,5 +338,6 @@ cardFileNames :: IO [String]
 cardFileNames = mapM getPath files
   where getPath s = getDataFileName $ "res/cards/" ++ s ++ ".txt"
         files = ["dominion", "intrigue", "seaside", "alchemy", "prosperity",
-                 "cornucopia", "hinterlands", "darkAges", "guilds", "custom"]
+                 "cornucopia", "hinterlands", "darkAges", "guilds", "promos",
+                 "custom"]
 
