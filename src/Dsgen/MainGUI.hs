@@ -252,9 +252,9 @@ instance SetOptionable GUIState where
                            0 -> SheltersWithDarkAges
                            1 -> RandomShelters
             convertComplexityFilterValue v = case v of
-                0 -> LowComplexityRuleOption
-                1 -> MediumComplexityRuleOption
-                2 -> HighComplexityRuleOption
+                0 -> LowComplexityFilterOption
+                1 -> MediumComplexityFilterOption
+                2 -> HighComplexityFilterOption
             convertReactionRuleValue v = case v of
                 0 -> MoatReaction
                 1 -> BlockerReaction
@@ -274,7 +274,7 @@ main = do
     on window deleteEvent (liftIO mainQuit >> return False)
 
     -- Load cards, displaying popup and quitting if this fails
-    cardfiles <- cardFileNames
+    cardFiles <- cardFileNames
     cardse <- runErrorT $ readCardFiles cardFiles
     case cardse of
         Left s -> startupErrorQuit $ show s
@@ -294,7 +294,7 @@ selectAndDisplaySet b w tv cs = do
     let ssos = toSetSelectOptions gst
     sgre <- selectSet ssos cs
     case sgre of
-        Left e -> displayError w e
+        Left e -> displayOutput tv e
         Right sgr -> displayCardOutput tv $ setKingdomCards sgr
 
 -- | Displays a list of prettyf-formatted card names in a TextView.
@@ -325,6 +325,7 @@ displayError w s = do
                                ButtonsOk
                                s
     dialogRun dialog
+    widgetDestroy dialog
     return ()
 
 {- | Returns a list of filepaths to all predefined card files. This is in the

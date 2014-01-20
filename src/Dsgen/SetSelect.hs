@@ -57,7 +57,7 @@ data Emphasis = NoEmphasis
 type Filter = Card -> Bool
 
 -- | Defines options for the complexity rule.
-data ComplexityFilterOption = LowComplexityRuleOption | MediumComplexityRuleOption | HighComplexityRuleOption
+data ComplexityFilterOption = LowComplexityFilterOption | MediumComplexityFilterOption | HighComplexityFilterOption
 
 {- | A function which takes a set of cards and returns whether or not the set
 satisfies the rule. -}
@@ -117,9 +117,9 @@ actionFilter c = (notElem Treasure (cardCategories c)) && (notElem Victory (card
 complexityFilter :: ComplexityFilterOption -> Filter
 complexityFilter cx c = cardComplexity c <= cx'
   where cx' = case cx of
-                  LowComplexityRuleOption -> Low
-                  MediumComplexityRuleOption -> Medium
-                  HighComplexityRuleOption -> High
+                  LowComplexityFilterOption -> Low
+                  MediumComplexityFilterOption -> Medium
+                  HighComplexityFilterOption -> High
 
 
 {- Rules -}
@@ -230,13 +230,16 @@ selectKingdomCards :: [Card] -> [CardSource] -> [Filter] -> [Rule] -> IO (Either
 selectKingdomCards cs ss fs rs = do
     let sourced = filter (\x -> elem (cardSource x) ss) cs
     let filtered = foldr filter sourced fs
-    cards <- shuffle filtered
-    let pared = fullyPareSet rs cards
-    case pared of
-        Left s -> return $ Left s
-        Right cs -> if length cs > 10
-                    then return $ Left "Rules are too strict; unable to reduce down to 10 cards."
-                    else return $ Right cs
+    if length filtered < 10
+     then return $ Left "Not enough sources selected; less than 10 cards left after filtering."
+     else do
+         cards <- shuffle filtered
+         let pared = fullyPareSet rs cards
+         case pared of
+             Left s -> return $ Left s
+             Right cs -> if length cs > 10
+                         then return $ Left "Rules are too strict; unable to reduce down to 10 cards."
+                         else return $ Right cs
 
 {- | Given a list of cards and a set of rules, reduces the list down to 10
 cards which still satisfy all the rules and returns that list, or an error
@@ -249,11 +252,13 @@ fullyPareSet rs cs
 {- | Removes one card from a list of cards, such that the provided list of
 rules are all still satisfied by the new, smaller list. -}
 pareSet :: [Rule] -> [Card] -> Either String [Card]
-pareset _ [] = Left "Unable to pare down the set; rules are too strict"
-pareSet rs (c:cs) = if satisfiesRules rs cs
-                    then Right cs
-                    else liftM (c:) (pareSet rs cs)
-  where satisfiesRules rs cs = all (\x -> x cs) rs
+pareSet rs cs = pareSetHelper rs [] cs
+  where pareSetHelper _ _ [] = Left "Unable to pare down the set; rules are too strict"
+        pareSetHelper rs xcs (c:cs) =
+            if satisfiesRules rs $ xcs ++ cs
+            then Right cs
+            else liftM (c:) (pareSetHelper rs (c:xcs) cs)
+        satisfiesRules rs cs = all (\x -> x cs) rs
 
 {- | Randomly shuffle a list.
 Obtained from http://www.haskell.org/haskellwiki/Random_shuffle -}

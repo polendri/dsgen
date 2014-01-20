@@ -1,7 +1,4 @@
-- Finish SetSelect unit tests
-- Fix bugs
-- Implement the rest of the output
+- Fix promos can't be selected
 - Display the rest of the output (not just a kingdom card list)
-- Properly display error output if generation fails
 - Implement the help buttons
 
