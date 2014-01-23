@@ -1,6 +1,9 @@
 import Control.Monad.Error
 import Control.Monad.Trans(liftIO)
+import qualified Data.Foldable as F
 import Data.List
+import Data.Set(Set)
+import qualified Data.Set as Set
 import Graphics.UI.Gtk
 import System.Random
 
@@ -190,22 +193,22 @@ instance SetOptionable GUIState where
         setSelectPlatinumAddition = platinum,
         setSelectSheltersAddition = shelters
         }
-      where sources = concat [
-                (if guiDominionChecked gst then [Dominion] else []),
-                (if guiIntrigueChecked gst then [Intrigue] else []),
-                (if guiAlchemyChecked gst then [Alchemy] else []),
-                (if guiSeasideChecked gst then [Seaside] else []),
-                (if guiProsperityChecked gst then [Prosperity] else []),
-                (if guiCornucopiaChecked gst then [Cornucopia] else []),
-                (if guiHinterlandsChecked gst then [Hinterlands] else []),
-                (if guiDarkAgesChecked gst then [DarkAges] else []),
-                (if guiGuildsChecked gst then [Guilds] else []),
-                (if guiEnvoyChecked gst then [EnvoyPromo] else []),
-                (if guiBlackMarketChecked gst then [BlackMarketPromo] else []),
-                (if guiGovernorChecked gst then [GovernorPromo] else []),
-                (if guiStashChecked gst then [StashPromo] else []),
+      where sources = Set.fromList $ concat [
+                (if guiDominionChecked      gst then [Dominion] else []),
+                (if guiIntrigueChecked      gst then [Intrigue] else []),
+                (if guiAlchemyChecked       gst then [Alchemy] else []),
+                (if guiSeasideChecked       gst then [Seaside] else []),
+                (if guiProsperityChecked    gst then [Prosperity] else []),
+                (if guiCornucopiaChecked    gst then [Cornucopia] else []),
+                (if guiHinterlandsChecked   gst then [Hinterlands] else []),
+                (if guiDarkAgesChecked      gst then [DarkAges] else []),
+                (if guiGuildsChecked        gst then [Guilds] else []),
+                (if guiEnvoyChecked         gst then [EnvoyPromo] else []),
+                (if guiBlackMarketChecked   gst then [BlackMarketPromo] else []),
+                (if guiGovernorChecked      gst then [GovernorPromo] else []),
+                (if guiStashChecked         gst then [StashPromo] else []),
                 (if guiWalledVillageChecked gst then [WalledVillagePromo] else []),
-                (if guiCustomChecked gst then [Custom] else [])
+                (if guiCustomChecked        gst then [Custom] else [])
                 ]
             emphasis = if not $ guiEmphasisChecked gst
                            then NoEmphasis
@@ -252,15 +255,15 @@ instance SetOptionable GUIState where
                            0 -> SheltersWithDarkAges
                            1 -> RandomShelters
             convertComplexityFilterValue v = case v of
-                0 -> LowComplexityFilterOption
-                1 -> MediumComplexityFilterOption
-                2 -> HighComplexityFilterOption
+                0 -> LowComplexityOnly
+                1 -> MediumComplexityOrLower
+                2 -> HighComplexityOrLower
             convertReactionRuleValue v = case v of
-                0 -> MoatReaction
-                1 -> BlockerReaction
-                2 -> ReactionReaction
+                0 -> RequireMoat
+                1 -> RequireBlocker
+                2 -> RequireReaction
             convertTrasherRuleValue v = case v of
-                0 -> CurseTrasher
+                0 -> TrasherWithCurse
                 1 -> AlwaysTrasher
 
 main :: IO ()
@@ -292,13 +295,10 @@ selectAndDisplaySet :: Builder -> Window -> TextView -> [Card] -> IO ()
 selectAndDisplaySet b w tv cs = do
     gst <- readGUIState b
     let ssos = toSetSelectOptions gst
-    sgre <- selectSet ssos cs
+    sgre <- runErrorT $ selectSet ssos Set.empty $ Set.fromList cs
     case sgre of
         Left e -> displayOutput tv e
-        Right sgr -> displayCardOutput tv $ setKingdomCards sgr
-
--- | Displays a full set selection
--- TODO
+        Right sgr -> displayCardOutput tv $ Set.toList $ setKingdomCards sgr
 
 -- | Displays a list of pretty-formatted card names in a TextView.
 displayCardOutput :: TextView -> [Card] -> IO ()

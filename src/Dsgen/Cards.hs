@@ -60,7 +60,7 @@ data CardSource = Dominion
                 | WalledVillagePromo
                 | GovernorPromo
                 | Custom
-    deriving (Eq, Read, Show)
+    deriving (Eq, Ord, Read, Show)
 
 -- | An data type which represents either a fixed integer, or 'Variable'.
 data Amount = FixedAmount Int | Variable
@@ -107,7 +107,7 @@ source (in brackets) -}
 showCardName :: Card -> String
 showCardName c = (cardName c) ++ " (" ++ (show $ cardSource c) ++ ")"
 
--- | Reads all specified card files, returning them all in a single list
+-- | Reads all specified card files, returning them in a single list
 readCardFiles :: [String] -> ErrorT CPError IO [Card]
 readCardFiles cfns = liftM concat $ mapM readCardFile cfns
 
