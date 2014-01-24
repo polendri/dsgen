@@ -1,4 +1,13 @@
-- Fix promos can't be selected
-- Display the rest of the output (not just a kingdom card list)
-- Implement the help buttons
+High:
+ * Undo Set refactor
+ * Hook new UI into code
+ * Get set generation working
+
+Medium:
+ * Distinguish between "can trash anything" and "can trash certain types of cards"
+ * Change the CurseTrasher rule such that it requires an anything-trasher
+ * Add a number dropdown to the interactivity rule
+
+Low:
+ * Add a stricter card variety rule
 
