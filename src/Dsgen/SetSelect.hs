@@ -56,7 +56,7 @@ data Emphasis = NoEmphasis
               | HinterlandsEmphasis
               | DarkAgesEmphasis
               | GuildsEmphasis
-    deriving (Eq)
+  deriving (Eq, Ord, Read, Show)
 
 -- | A filter for thinning out sets of 'Card's.
 type Filter = Card -> Bool
@@ -65,6 +65,7 @@ type Filter = Card -> Bool
 data ComplexityFilterOption = LowComplexityOnly
                             | MediumComplexityOrLower
                             | HighComplexityOrLower
+  deriving (Eq, Ord, Read, Show)
 
 {- | A 'Rule' takes a set of cards and decides whether or not the set
 satisfies some kind of criteria. -}
@@ -72,21 +73,26 @@ type Rule = [Card] -> Bool
 
 -- | Defines options for the reaction rule.
 data ReactionRuleOption = RequireMoat | RequireBlocker | RequireReaction
+  deriving (Eq, Ord, Read, Show)
 
 -- | Defines options for the trasher rule.
 data TrasherRuleOption  = TrasherWithCurse | AlwaysTrasher
+  deriving (Eq, Ord, Read, Show)
 
 -- | Determines whether or not to include an addition.
 type Addition = IO Bool
 
 -- | Defines options for the Colony addition.
 data ColonyAdditionOption = NoColony | RandomColony
+  deriving (Eq, Ord, Read, Show)
 
 -- | Defines options for the Platinum addition.
 data PlatinumAdditionOption = NoPlatinum | RandomPlatinum | PlatinumWithColony
+  deriving (Eq, Ord, Read, Show)
 
 -- | Defines options for the Shelters addition.
 data SheltersAdditionOption = NoShelters | SheltersWithDarkAges | RandomShelters
+  deriving (Eq, Ord, Read, Show)
 
 {- | Contains options for customizing the selection of Kingdom card sets -}
 data SetSelectOptions = SetSelectOptions {
@@ -110,6 +116,7 @@ data SetSelectResult = SetSelectResult {
     setUsesPlatinum :: Bool,
     setUsesShelters :: Bool
     }
+  deriving (Show)
 
 -- | Type synonym for errors returned by 'selectSet'
 type SetSelectError = String

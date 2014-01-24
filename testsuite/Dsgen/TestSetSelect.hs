@@ -1,24 +1,104 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 module Dsgen.TestSetSelect where
 
+import Control.Monad(liftM)
 import Test.HUnit
+import Test.QuickCheck
+import Test.QuickCheck.All
 
 import Dsgen.Cards
 import Dsgen.SetSelect
 
 
+{- Helper methods -}
+
+elemAny :: Eq a => [a] -> [a] -> Bool
+elemAny [] _ = False
+elemAny (e:es) l = if elem e l then True else elemAny es l
+
+notElemAny :: Eq a => [a] -> [a] -> Bool
+notElemAny es l = not $ elemAny es l
+
+-- | Picks a random subset from the provided list
+subset :: [a] -> Gen [a]
+subset [] = return []
+subset (x:xs) = do
+    pickX <- arbitrary :: Gen Bool
+    if pickX then liftM (x:) rest else rest
+  where rest = subset xs
+
+cardNameGen :: Gen String
+cardNameGen = frequency [(1,   return "Moat"),
+                         (204, listOf1 $ elements (['A'..'Z'] ++ ['a'..'z']))]
+
+
+{- QuickCheck definitions for types -}
+
+instance Arbitrary Card where
+    arbitrary = do
+        name          <- cardNameGen
+        source        <- arbitrary
+        cost          <- arbitrary
+        potionCost    <- arbitrary
+        categories    <- subset [Action, Attack, Reaction, Duration,
+                              Treasure, Victory, Looter]
+        plusCards     <- arbitrary
+        plusActions   <- arbitrary
+        plusBuys      <- arbitrary
+        plusCoins     <- arbitrary
+        blocksAttacks <- arbitrary
+        givesCurses   <- arbitrary
+        gainsCards    <- arbitrary
+        trashesCards  <- arbitrary
+        trashesItself <- arbitrary
+        interactive   <- arbitrary
+        complexity    <- arbitrary
+        return Card {
+            cardName          = name,
+            cardSource        = source,
+            cardCost          = cost,
+            cardPotionCost    = potionCost,
+            cardCategories    = categories,
+            cardPlusCards     = plusCards,
+            cardPlusActions   = plusActions,
+            cardPlusBuys      = plusBuys,
+            cardPlusCoins     = plusCoins,
+            cardBlocksAttacks = blocksAttacks,
+            cardGivesCurses   = givesCurses,
+            cardGainsCards    = gainsCards,
+            cardTrashesCards  = trashesCards,
+            cardTrashesItself = trashesItself,
+            cardInteractive   = interactive,
+            cardComplexity    = complexity
+            }
+
+instance Arbitrary CardSource where
+    arbitrary = elements [Dominion, Intrigue, Seaside, Alchemy,
+                          Prosperity, Cornucopia, Hinterlands, DarkAges,
+                          Guilds, EnvoyPromo, BlackMarketPromo, StashPromo,
+                          WalledVillagePromo, GovernorPromo, Custom]
+
+instance Arbitrary Amount where
+    arbitrary = do
+        n <- choose (-1, 10) :: Gen Int
+        return $ if n == -1 then Variable else FixedAmount n
+
+instance Arbitrary CardCategory where
+    arbitrary = elements [Action, Attack, Reaction, Duration,
+                          Treasure, Victory, Looter]
+
+instance Arbitrary CardComplexity where
+    arbitrary = elements [Low, Medium, High]
+
+
 {- Test definitions -}
 
-actionFilterTests = TestCase $ do
-    assertEqual "actionFilter failed to filter Victory"
-                False
-                (actionFilter $ sampleCard { cardCategories = [Action, Victory] })
-    assertEqual "actionFilter failed to filter Treasure"
-                False
-                (actionFilter $ sampleCard { cardCategories = [Action, Treasure] })
-    assertEqual "actionFilter filtered unexpectedly"
-                True
-                (actionFilter $ sampleCard { cardCategories = [Action, Attack, Reaction, Duration, Looter] })
+prop_actionFilterPositive c = notElemAny [Treasure, Victory] (cardCategories c) ==> actionFilter c == False
 
+prop_actionFilterNegative c = notElemAny [Treasure, Victory] (cardCategories c) ==> actionFilter c == True
+
+{-
 complexityFilterTests = TestCase $ do
     assertEqual "complexityFilter failed to filter"
                 False
@@ -110,38 +190,12 @@ trasherRuleTests = TestCase $ do
                 (trasherRule AlwaysTrasher $ [
                      sampleCard { cardTrashesCards = True }
                      ])
+-}
 
 
 {- Test list -}
 
-hunitTests = TestList [
-    TestLabel "actionFilter tests" actionFilterTests,
-    TestLabel "complexityFilter tests" complexityFilterTests,
-    TestLabel "costVarietyRule tests" costVarietyRuleTests,
-    TestLabel "interactivityRule tests" interactivityRuleTests,
-    TestLabel "reactionRule tests" reactionRuleTests,
-    TestLabel "trasherRule tests" trasherRuleTests
-    ]
+hunitTests = TestList []
 
-
-{- Sample data -}
-
-sampleCard = Card {
-    cardName = "Test",
-    cardSource = Dominion,
-    cardCost = FixedAmount 1,
-    cardPotionCost = FixedAmount 0,
-    cardCategories = [Action, Attack],
-    cardPlusCards = FixedAmount 0,
-    cardPlusActions = Variable,
-    cardPlusBuys = FixedAmount 1,
-    cardPlusCoins = FixedAmount 6,
-    cardBlocksAttacks = False,
-    cardGivesCurses = True,
-    cardGainsCards = True,
-    cardTrashesCards = False,
-    cardTrashesItself = False,
-    cardInteractive = True,
-    cardComplexity = High
-    }
+quickCheckTests = $quickCheckAll
 
