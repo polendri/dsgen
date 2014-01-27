@@ -1,9 +1,13 @@
+-- | Driver module for running the test suite.
 module RunTests where
 
-import Test.HUnit(runTestTT)
+import Test.HUnit(runTestTT, errors, failures)
 
 import qualified Dsgen.TestCards as TestCards
 import qualified Dsgen.TestSetSelect as TestSetSelect
+
+
+{- Test collection lists -}
 
 hunitTests = [
     TestCards.hunitTests,
@@ -15,21 +19,24 @@ quickCheckTests = [
     ]
 
 
+{- Test runner functions -}
+
+runHUnitTests hs = do
+    counts <- runTestTT hs
+    return ()
+
+runQuickCheckTests qcs = do
+    success <- qcs
+    return ()
+
 runTests hs qcs = do
     putStr "\n"
     putStr "Running HUnit tests...\n\n"
-    mapM_ runTestTT hs
+    mapM_ runHUnitTests hs
     putStr "\n\n"
     putStr "Running QuickCheck tests...\n\n"
-    mapM_ id qcs
+    mapM_ runQuickCheckTests qcs
     putStr "\n"
-
-{-
-runQCTests :: IO Bool -> IO ()
-runQCTests rt = rt >>= \passed -> if passed
-                                  then putStrLn $ "All tests passed."
-                                  else putStrLn $ "Some tests failed."
--}
 
 main = runTests hunitTests quickCheckTests
 

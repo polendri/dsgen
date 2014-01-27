@@ -55,6 +55,10 @@ data GUIState  = GUIState {
     guiSheltersAdditionChecked  :: Bool,
     guiSheltersAdditionValue    :: Int,
 
+    -- Card lists
+    guiSelectedCards       :: [Card],
+    guiManuallyPickedCards :: [Card],
+
     -- Widgets
     guiOutputTextView :: TextView
     }
@@ -133,6 +137,16 @@ readGUIState builder = do
     sheltersAdditionChecked     <- toggleButtonGetActive sheltersAdditionCheckButton
     sheltersAdditionComboBox    <- builderGetObject builder castToComboBox "sheltersAdditionComboBox"
     sheltersAdditionValue       <- comboBoxGetActive sheltersAdditionComboBox
+
+    -- Card lists
+    selectedCardsTreeView        <- builderGetObject builder castToTreeView "cardTreeView"
+    selectedCardsTreeModel       <- liftM2 $ maybe (error "No model for cardTreeView")
+                                                   (return id)
+                                                   (treeViewGetModel selectCardsTreeView)
+    manuallyPickedCardsTreeView  <- builderGetObject builder castToTreeView "pickedCardTreeView"
+    manuallyPickedCardsTreeModel <- liftM2 $ maybe (error "No model for pickedCardTreeView")
+                                             (return id)
+                                             (treeViewGetModel selectCardsTreeView)
 
     -- Widgets
     outputTextView <- builderGetObject builder castToTextView "outputTextView"
@@ -341,3 +355,12 @@ cardFileNames = mapM getPath files
                  "cornucopia", "hinterlands", "darkAges", "guilds", "promos",
                  "custom"]
 
+getAllCardListNames :: TreeModelClass self => self -> IO [String]
+getAllCardListNames = getAllValues self (treeModelGetIterFirst self)
+  where getAllValues tm iterm =
+            case iterm of
+                Nothing -> []
+                Just iter -> do
+                    val <- treeModelGetValue self iter (makeColumnIdString 0)
+                    iterm' <- treeModelIterNext self iter
+                    liftM (val:) (getAllValues tm iterm')

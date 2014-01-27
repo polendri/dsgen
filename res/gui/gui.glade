@@ -51,6 +51,44 @@
       </row>
     </data>
   </object>
+  <object class="GtkListStore" id="emphasisListStore">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">random expansion</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Dominion</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Intrigue</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Seaside</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Alchemy</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Prosperity</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Cornucopia</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Hinterlands</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Dark Ages</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Guilds</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkWindow" id="dsgenWindow">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">dsgen - Dominion Kingdom card set generator</property>
@@ -1224,10 +1262,10 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkTreeView" id="keptCardTreeView">
+                              <object class="GtkTreeView" id="pickedCardTreeView">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="model">keptCardListStore</property>
+                                <property name="model">pickedCardListStore</property>
                                 <property name="headers_clickable">False</property>
                                 <property name="search_column">0</property>
                                 <child>
@@ -1403,50 +1441,12 @@
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="emphasisListStore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">random expansion</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Dominion</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Intrigue</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Seaside</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Alchemy</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Prosperity</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Cornucopia</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Hinterlands</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Dark Ages</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Guilds</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkImage" id="keepCardImage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-go-down</property>
   </object>
-  <object class="GtkListStore" id="keptCardListStore">
+  <object class="GtkListStore" id="pickedCardListStore">
     <columns>
       <!-- column-name Name -->
       <column type="gchararray"/>
