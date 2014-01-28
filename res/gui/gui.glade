@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkImage" id="addCardButto">
+  <object class="GtkImage" id="addCardImage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-add</property>
   </object>
-  <object class="GtkListStore" id="cardListStore">
-    <columns>
-      <!-- column-name Name -->
-      <column type="gchararray"/>
-      <!-- column-name Cost -->
-      <column type="gint"/>
-      <!-- column-name Source -->
-      <column type="gchararray"/>
-    </columns>
+  <object class="GtkImage" id="addCardImage1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-add</property>
   </object>
   <object class="GtkListStore" id="complexityFilterListStore">
     <columns>
@@ -82,29 +77,164 @@
       </row>
     </data>
   </object>
-  <object class="GtkWindow" id="dsgenWindow">
+  <object class="GtkImage" id="keepCardImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-goto-top</property>
+  </object>
+  <object class="GtkListStore" id="manualCardsListStore">
+    <columns>
+      <!-- column-name Name -->
+      <column type="gchararray"/>
+      <!-- column-name Cost -->
+      <column type="gint"/>
+      <!-- column-name Source -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="randomCardsListStore">
+    <columns>
+      <!-- column-name Name -->
+      <column type="gchararray"/>
+      <!-- column-name Cost -->
+      <column type="gint"/>
+      <!-- column-name Source -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="reactionRuleListStore">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Moat</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">an attack blocker</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">a reaction card</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkImage" id="removeCardImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-remove</property>
+  </object>
+  <object class="GtkImage" id="removeCardImage1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-remove</property>
+  </object>
+  <object class="GtkImage" id="saveOptionsAsImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-save-as</property>
+  </object>
+  <object class="GtkWindow" id="mainWindow">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">dsgen - Dominion Kingdom card set generator</property>
     <child>
-      <object class="GtkBox" id="box1">
+      <object class="GtkBox" id="mainBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkNotebook" id="dsgenNotebook">
+          <object class="GtkMenuBar" id="mainMenuBar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkVBox" id="box3">
+              <object class="GtkMenuItem" id="fileMenuItem">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">_File</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="fileMenu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="saveOptionsMenuEntry">
+                        <property name="label" translatable="yes">Save Options</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">saveOptionsImage</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="saveOptionsAsMenuEntry">
+                        <property name="label" translatable="yes">Save Options As</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">saveOptionsAsImage</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openOptionsMenuEntry">
+                        <property name="label">gtk-open</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="helpMenuItem">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">_Help</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="helpMenu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="helpMenuEntry">
+                        <property name="label">gtk-about</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkNotebook" id="mainNotebook">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkVBox" id="optionsBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkBox" id="box5">
+                  <object class="GtkBox" id="cardOptionsBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkHBox" id="box18">
+                      <object class="GtkHBox" id="cardPoolOptionsBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -114,12 +244,12 @@
                             <property name="label_xalign">0</property>
                             <property name="shadow_type">none</property>
                             <child>
-                              <object class="GtkAlignment" id="alignment1">
+                              <object class="GtkAlignment" id="expansionsAlignment">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="left_padding">12</property>
                                 <child>
-                                  <object class="GtkGrid" id="grid2">
+                                  <object class="GtkGrid" id="expansionsGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <child>
@@ -129,6 +259,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="xalign">0</property>
+                                        <property name="active">True</property>
                                         <property name="draw_indicator">True</property>
                                       </object>
                                       <packing>
@@ -271,7 +402,7 @@
                               </object>
                             </child>
                             <child type="label">
-                              <object class="GtkLabel" id="label5">
+                              <object class="GtkLabel" id="expansionsLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">&lt;b&gt;Included Expansions&lt;/b&gt;</property>
@@ -287,7 +418,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkFrame" id="promoCardsFrame">
+                          <object class="GtkFrame" id="extraCardsFrame">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label_xalign">0</property>
@@ -298,7 +429,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="left_padding">12</property>
                                 <child>
-                                  <object class="GtkGrid" id="grid3">
+                                  <object class="GtkGrid" id="extraCardsGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <child>
@@ -403,7 +534,7 @@
                               </object>
                             </child>
                             <child type="label">
-                              <object class="GtkLabel" id="label6">
+                              <object class="GtkLabel" id="extrasLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">&lt;b&gt;Extras&lt;/b&gt;</property>
@@ -427,64 +558,91 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="box19">
+                      <object class="GtkBox" id="emphasisRuleAndCustomizeAlignmentBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkBox" id="emphasisBox">
+                          <object class="GtkBox" id="emphasisRuleAndCustomizeBox2">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="tooltip_text" translatable="yes">A set with an emphasized expansion will contain at least 4 cards from that expansion.</property>
                             <child>
-                              <object class="GtkCheckButton" id="emphasisCheckButton">
+                              <object class="GtkBox" id="emphasisRuleBox">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_markup" translatable="yes">A set with an emphasized expansion will contain at least 4 cards from that expansion.</property>
+                                <property name="tooltip_text" translatable="yes">A set with an emphasized expansion will contain at least 4 cards from that expansion.</property>
+                                <child>
+                                  <object class="GtkCheckButton" id="emphasisCheckButton">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="xalign">0</property>
+                                    <property name="draw_indicator">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="emphasisRuleLabel1">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Emphasize </property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkComboBox" id="emphasisRuleComboBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="model">emphasisListStore</property>
+                                    <property name="active">0</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="emphasisRuleRendererText"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
+                                <property name="expand">True</property>
                                 <property name="fill">True</property>
+                                <property name="padding">5</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="label15">
+                              <object class="GtkButton" id="cardPoolCustomizeButton">
+                                <property name="label" translatable="yes">Customize...</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Emphasize </property>
+                                <property name="receives_default">True</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">True</property>
+                                <property name="pack_type">end</property>
                                 <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkComboBox" id="emphasisComboBox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="model">emphasisListStore</property>
-                                <property name="active">0</property>
-                                <child>
-                                  <object class="GtkCellRendererText" id="cellrenderertext7"/>
-                                  <attributes>
-                                    <attribute name="text">0</attribute>
-                                  </attributes>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">2</property>
                               </packing>
                             </child>
                           </object>
                           <packing>
                             <property name="expand">True</property>
                             <property name="fill">True</property>
-                            <property name="padding">5</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -503,7 +661,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="box10">
+                  <object class="GtkBox" id="filtersAlignmentBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -513,12 +671,12 @@
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">none</property>
                         <child>
-                          <object class="GtkAlignment" id="alignment4">
+                          <object class="GtkAlignment" id="filtersAlignment">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="left_padding">12</property>
                             <child>
-                              <object class="GtkBox" id="box11">
+                              <object class="GtkBox" id="filtersBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="orientation">vertical</property>
@@ -542,7 +700,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label11">
+                                      <object class="GtkLabel" id="complexityFilterLabel1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="label" translatable="yes">Exclude all cards of </property>
@@ -573,7 +731,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label12">
+                                      <object class="GtkLabel" id="complexityFilterLabel2">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="label" translatable="yes"> complexity or higher</property>
@@ -592,39 +750,66 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkBox" id="actionFilterBox">
+                                  <object class="GtkBox" id="actionAndCustomizeFilterBox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="tooltip_text" translatable="yes">Ensures that all card picked will be regular old Action or Reaction cards.</property>
                                     <child>
-                                      <object class="GtkCheckButton" id="actionFilterCheckButton">
+                                      <object class="GtkBox" id="actionFilterBox">
                                         <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="receives_default">False</property>
-                                        <property name="xalign">0</property>
-                                        <property name="draw_indicator">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="has_tooltip">True</property>
+                                        <property name="tooltip_markup" translatable="yes">Ensures that all card picked will be regular old Action or Reaction cards.</property>
+                                        <property name="tooltip_text" translatable="yes">Ensures that all card picked will be regular old Action or Reaction cards.</property>
+                                        <child>
+                                          <object class="GtkCheckButton" id="actionFilterCheckButton">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="xalign">0</property>
+                                            <property name="draw_indicator">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="actionFilterLabel">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">Exclude non-Action cards</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
                                       </object>
                                       <packing>
-                                        <property name="expand">False</property>
+                                        <property name="expand">True</property>
                                         <property name="fill">True</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label14">
+                                      <object class="GtkButton" id="customFiltersButton">
+                                        <property name="label" translatable="yes">Custom FIlters...</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">Exclude Treasure and Victory cards</property>
+                                        <property name="receives_default">True</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="fill">True</property>
+                                        <property name="pack_type">end</property>
                                         <property name="position">1</property>
                                       </packing>
                                     </child>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
+                                    <property name="expand">True</property>
                                     <property name="fill">True</property>
                                     <property name="position">1</property>
                                   </packing>
@@ -634,7 +819,7 @@
                           </object>
                         </child>
                         <child type="label">
-                          <object class="GtkLabel" id="label9">
+                          <object class="GtkLabel" id="filtersLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">&lt;b&gt;Filters&lt;/b&gt;</property>
@@ -658,7 +843,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="box6">
+                  <object class="GtkBox" id="rulesAlignmentBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -669,7 +854,7 @@
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">none</property>
                         <child>
-                          <object class="GtkAlignment" id="alignment3">
+                          <object class="GtkAlignment" id="rulesAlignment">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="left_padding">12</property>
@@ -698,7 +883,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label1">
+                                      <object class="GtkLabel" id="reactionRuleLabel1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="label" translatable="yes">Require </property>
@@ -729,7 +914,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label2">
+                                      <object class="GtkLabel" id="reactionRuleLabel2">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="label" translatable="yes"> when an attack card is present</property>
@@ -767,7 +952,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label8">
+                                      <object class="GtkLabel" id="trasherRuleLabel1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="label" translatable="yes">Require a trasher card </property>
@@ -824,15 +1009,46 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label3">
+                                      <object class="GtkLabel" id="interactivityRuleLabel1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">Require at least two interactive cards</property>
+                                        <property name="label" translatable="yes">Require at least </property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="fill">True</property>
                                         <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkComboBox" id="trasherRuleComboBox1">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="model">trasherRuleListStore</property>
+                                        <property name="active">0</property>
+                                        <child>
+                                          <object class="GtkCellRendererText" id="cellrenderertext3"/>
+                                          <attributes>
+                                            <attribute name="text">0</attribute>
+                                          </attributes>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="interactivityRuleLabel2">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="label" translatable="yes"> interactive cards</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">3</property>
                                       </packing>
                                     </child>
                                   </object>
@@ -843,39 +1059,66 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkBox" id="costVarietyRuleBox">
+                                  <object class="GtkBox" id="costVarietyAndCustomizeRuleBox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="tooltip_text" translatable="yes">Requires that the set contain at least one card worth each of 2, 3, 4 and 5.</property>
                                     <child>
-                                      <object class="GtkCheckButton" id="costVarietyRuleCheckButton">
+                                      <object class="GtkBox" id="costVarietyRuleBox">
                                         <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="receives_default">False</property>
-                                        <property name="xalign">0</property>
-                                        <property name="draw_indicator">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="has_tooltip">True</property>
+                                        <property name="tooltip_markup" translatable="yes">Requires that the set contain at least one card worth each of 2, 3, 4 and 5.</property>
+                                        <property name="tooltip_text" translatable="yes">Requires that the set contain at least one card worth each of 2, 3, 4 and 5.</property>
+                                        <child>
+                                          <object class="GtkCheckButton" id="costVarietyRuleCheckButton">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="xalign">0</property>
+                                            <property name="draw_indicator">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="costVarietyRuleLabel1">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">Require card cost variety</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
                                       </object>
                                       <packing>
-                                        <property name="expand">False</property>
+                                        <property name="expand">True</property>
                                         <property name="fill">True</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label13">
+                                      <object class="GtkButton" id="customRulesButton">
+                                        <property name="label" translatable="yes">Custom Rules...</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">Require card cost variety</property>
+                                        <property name="receives_default">True</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="fill">True</property>
+                                        <property name="pack_type">end</property>
                                         <property name="position">1</property>
                                       </packing>
                                     </child>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
+                                    <property name="expand">True</property>
                                     <property name="fill">True</property>
                                     <property name="position">3</property>
                                   </packing>
@@ -909,7 +1152,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="box13">
+                  <object class="GtkBox" id="additionsAlignmentBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -919,22 +1162,22 @@
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">none</property>
                         <child>
-                          <object class="GtkAlignment" id="alignment5">
+                          <object class="GtkAlignment" id="additionsAlignment">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="left_padding">12</property>
                             <child>
-                              <object class="GtkBox" id="box14">
+                              <object class="GtkBox" id="additionsBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="orientation">vertical</property>
                                 <child>
-                                  <object class="GtkBox" id="colonyAdditionBox">
+                                  <object class="GtkBox" id="colPlatAdditionBox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="tooltip_text" translatable="yes">Randomly decides whether the game should be played with Colony. (Requires the Prosperity expansion)</property>
                                     <child>
-                                      <object class="GtkCheckButton" id="colonyAdditionCheckButton">
+                                      <object class="GtkCheckButton" id="colPlatAdditionCheckButton">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
@@ -948,11 +1191,11 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label4">
+                                      <object class="GtkLabel" id="colPlatAdditionLabel1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="xalign">0.47999998927116394</property>
-                                        <property name="label" translatable="yes">Include Colony randomly</property>
+                                        <property name="label" translatable="yes">Include Colony and Platinum randomly</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -968,66 +1211,11 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkBox" id="platinumAdditionBox">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="tooltip_text" translatable="yes">Works the same as Colony, but optionally allows you to tie Platinum usage to Colony usage, such that games will either use both, or neither. (Requires the Prosperity expansion)</property>
-                                    <child>
-                                      <object class="GtkCheckButton" id="platinumAdditionCheckButton">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="receives_default">False</property>
-                                        <property name="xalign">0</property>
-                                        <property name="draw_indicator">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label7">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">Include Platinum </property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkComboBox" id="platinumAdditionComboBox">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="model">platinumAdditionListStore</property>
-                                        <property name="active">0</property>
-                                        <child>
-                                          <object class="GtkCellRendererText" id="cellrenderertext3"/>
-                                          <attributes>
-                                            <attribute name="text">0</attribute>
-                                          </attributes>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
                                   <object class="GtkBox" id="sheltersAdditionBox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip_markup" translatable="yes">Shelter usage can be either determined randomly, or set to occur only when Dark Ages is emphasized. (Requires the Dark Ages expansion)</property>
                                     <property name="tooltip_text" translatable="yes">Shelter usage can be either determined randomly, or set to occur only when Dark Ages is emphasized. (Requires the Dark Ages expansion)</property>
                                     <child>
                                       <object class="GtkCheckButton" id="sheltersAdditionCheckButton">
@@ -1044,7 +1232,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label16">
+                                      <object class="GtkLabel" id="sheltersAdditionLabel1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="label" translatable="yes">Use Shelters </property>
@@ -1078,7 +1266,7 @@
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">True</property>
-                                    <property name="position">2</property>
+                                    <property name="position">1</property>
                                   </packing>
                                 </child>
                               </object>
@@ -1086,7 +1274,7 @@
                           </object>
                         </child>
                         <child type="label">
-                          <object class="GtkLabel" id="label10">
+                          <object class="GtkLabel" id="additionsLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">&lt;b&gt;Additions&lt;/b&gt;</property>
@@ -1122,143 +1310,30 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="box7">
+              <object class="GtkBox" id="outputBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkFrame" id="cardListFrame">
+                  <object class="GtkFrame" id="manualCardsFrame">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment6">
+                      <object class="GtkAlignment" id="manualCardsAlignment">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="box8">
+                          <object class="GtkBox" id="manualCardsBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkTreeView" id="cardTreeView">
+                              <object class="GtkTreeView" id="manualCardsTreeView">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="model">cardListStore</property>
-                                <property name="headers_clickable">False</property>
-                                <property name="search_column">0</property>
-                                <child>
-                                  <object class="GtkTreeViewColumn" id="cardNameColumn">
-                                    <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">Name</property>
-                                    <child>
-                                      <object class="GtkCellRendererText" id="cellrenderertext2"/>
-                                      <attributes>
-                                        <attribute name="text">0</attribute>
-                                      </attributes>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkTreeViewColumn" id="cardCostColumn">
-                                    <property name="title" translatable="yes">Cost</property>
-                                    <child>
-                                      <object class="GtkCellRendererText" id="cellrenderertext6"/>
-                                      <attributes>
-                                        <attribute name="text">1</attribute>
-                                      </attributes>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkTreeViewColumn" id="cardSourceColumn">
-                                    <property name="title" translatable="yes">Source</property>
-                                    <child>
-                                      <object class="GtkCellRendererText" id="cellrenderertext9"/>
-                                      <attributes>
-                                        <attribute name="text">2</attribute>
-                                      </attributes>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
-                                <property name="padding">5</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="box12">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="orientation">vertical</property>
-                                <child>
-                                  <object class="GtkButton" id="keepCardButton">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Keep the selected card(s)</property>
-                                    <property name="tooltip_text" translatable="yes">Keep the selected card(s)</property>
-                                    <property name="image">keepCardImage</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="padding">2</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child type="label">
-                      <object class="GtkLabel" id="label17">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Randomly-selected Cards&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="padding">5</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkFrame" id="keptCardListFrame">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <property name="shadow_type">none</property>
-                    <child>
-                      <object class="GtkAlignment" id="alignment7">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="left_padding">12</property>
-                        <child>
-                          <object class="GtkBox" id="box2">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkTreeView" id="pickedCardTreeView">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="model">pickedCardListStore</property>
+                                <property name="model">manualCardsListStore</property>
                                 <property name="headers_clickable">False</property>
                                 <property name="search_column">0</property>
                                 <child>
@@ -1304,17 +1379,17 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkBox" id="box9">
+                              <object class="GtkBox" id="manualCardsButtonBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="orientation">vertical</property>
                                 <child>
-                                  <object class="GtkButton" id="addCardButton">
+                                  <object class="GtkButton" id="addManualCardButton">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Add new card</property>
-                                    <property name="image">addCardButto</property>
+                                    <property name="image">addCardImage</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1324,7 +1399,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="removeCardButton">
+                                  <object class="GtkButton" id="removeManualCardButton">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="receives_default">True</property>
@@ -1353,7 +1428,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label18">
+                      <object class="GtkLabel" id="manualCardsLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Manually-selected Cards&lt;/b&gt;</property>
@@ -1365,7 +1440,267 @@
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="padding">5</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFrame" id="randomCardsFrame">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">none</property>
+                    <child>
+                      <object class="GtkAlignment" id="randomCardsAlignment">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <object class="GtkBox" id="randomCardsBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkTreeView" id="randomCardsTreeView">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="model">randomCardsListStore</property>
+                                <property name="headers_clickable">False</property>
+                                <property name="search_column">0</property>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="cardNameColumn">
+                                    <property name="resizable">True</property>
+                                    <property name="title" translatable="yes">Name</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext2"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="cardCostColumn">
+                                    <property name="title" translatable="yes">Cost</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext6"/>
+                                      <attributes>
+                                        <attribute name="text">1</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="cardSourceColumn">
+                                    <property name="title" translatable="yes">Source</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext9"/>
+                                      <attributes>
+                                        <attribute name="text">2</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="padding">5</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox" id="randomCardsButtonBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkButton" id="keepCardButton">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip_markup" translatable="yes">Keep the selected card(s)</property>
+                                    <property name="tooltip_text" translatable="yes">Keep the selected card(s)</property>
+                                    <property name="image">keepCardImage</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="vetoCardButton">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip_markup" translatable="yes">Keep the selected card(s)</property>
+                                    <property name="tooltip_text" translatable="yes">Keep the selected card(s)</property>
+                                    <property name="image">vetoCardImage</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="padding">2</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel" id="randomCardsLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Randomly-selected Cards&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">5</property>
                     <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFrame" id="vetoedCardsFrame">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">none</property>
+                    <child>
+                      <object class="GtkAlignment" id="vetoedCardsAlignment">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <object class="GtkBox" id="vetoedCardsBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkTreeView" id="vetoedCardsTreeView">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="model">randomCardsListStore</property>
+                                <property name="headers_clickable">False</property>
+                                <property name="search_column">0</property>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="cardNameColumn2">
+                                    <property name="resizable">True</property>
+                                    <property name="title" translatable="yes">Name</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext7"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="cardCostColumn2">
+                                    <property name="title" translatable="yes">Cost</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext13"/>
+                                      <attributes>
+                                        <attribute name="text">1</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="cardSourceColumn2">
+                                    <property name="title" translatable="yes">Source</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext14"/>
+                                      <attributes>
+                                        <attribute name="text">2</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="padding">5</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox" id="vetoedCardsButtonBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkButton" id="addVetoedCardButton">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip_markup" translatable="yes">Add new card</property>
+                                    <property name="tooltip_text" translatable="yes">Add new card</property>
+                                    <property name="image">addCardImage1</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="padding">2</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="removeVetoedCardButton">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip_markup" translatable="yes">Remove the selected card(s)</property>
+                                    <property name="tooltip_text" translatable="yes">Remove the selected card(s)</property>
+                                    <property name="image">removeCardImage1</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="padding">2</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="padding">2</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel" id="selectedCardsLabel1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Randomly-selected Cards&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">5</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -1388,11 +1723,11 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">0</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box15">
+          <object class="GtkBox" id="bottomBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
@@ -1428,62 +1763,16 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">5</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>
     </child>
   </object>
-  <object class="GtkImage" id="keepCardImage">
+  <object class="GtkImage" id="saveOptionsImage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-go-down</property>
-  </object>
-  <object class="GtkListStore" id="pickedCardListStore">
-    <columns>
-      <!-- column-name Name -->
-      <column type="gchararray"/>
-      <!-- column-name Cost -->
-      <column type="gint"/>
-      <!-- column-name Source -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="platinumAdditionListStore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">randomly</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">when Colony is present</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="reactionRuleListStore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Moat</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">an attack blocker</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">a reaction card</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkImage" id="removeCardImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-remove</property>
+    <property name="stock">gtk-save</property>
   </object>
   <object class="GtkImage" id="selectSetImage">
     <property name="visible">True</property>
@@ -1517,5 +1806,10 @@
         <col id="0" translatable="yes">always</col>
       </row>
     </data>
+  </object>
+  <object class="GtkImage" id="vetoCardImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-goto-bottom</property>
   </object>
 </interface>

@@ -9,9 +9,13 @@ import Paths_dsgen
 import Dsgen.Cards
 import Dsgen.SetSelect
 
+-- | Holds all the relevant widgets from the UI.
+data GUI = GUI {
+    }
+
 {- | Holds the state of all GUI widgets which we might be interested in
 reading, and the actual widgets we might be interested in modifying -}
-data GUIState  = GUIState {
+data GUIState = GUIState {
     -- Sources
     guiDominionChecked      :: Bool,
     guiIntrigueChecked      :: Bool,
