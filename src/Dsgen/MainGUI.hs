@@ -2,8 +2,6 @@ import Control.Monad.Error
 import Control.Monad.Trans(liftIO)
 import qualified Data.Foldable as F
 import Data.List
-import Data.Set(Set)
-import qualified Data.Set as Set
 import Graphics.UI.Gtk
 import System.Random
 
@@ -64,92 +62,90 @@ data GUIState  = GUIState {
     }
 
 -- | Read all state into a GUIState object
-readGUIState :: Builder -> IO GUIState
-readGUIState builder = do
+readGUIState :: Builder -> [Card] -> ErrorT String IO GUIState
+readGUIState builder cs = do
     -- Sources
-    dominionCheckButton      <- builderGetObject builder castToCheckButton "dominionCheckButton"
-    dominionChecked          <- toggleButtonGetActive dominionCheckButton
-    intrigueCheckButton      <- builderGetObject builder castToCheckButton "intrigueCheckButton"
-    intrigueChecked          <- toggleButtonGetActive intrigueCheckButton
-    seasideCheckButton       <- builderGetObject builder castToCheckButton "seasideCheckButton"
-    seasideChecked           <- toggleButtonGetActive seasideCheckButton
-    alchemyCheckButton       <- builderGetObject builder castToCheckButton "alchemyCheckButton"
-    alchemyChecked           <- toggleButtonGetActive alchemyCheckButton
-    prosperityCheckButton    <- builderGetObject builder castToCheckButton "prosperityCheckButton"
-    prosperityChecked        <- toggleButtonGetActive prosperityCheckButton
-    cornucopiaCheckButton    <- builderGetObject builder castToCheckButton "cornucopiaCheckButton"
-    cornucopiaChecked        <- toggleButtonGetActive cornucopiaCheckButton
-    hinterlandsCheckButton   <- builderGetObject builder castToCheckButton "hinterlandsCheckButton"
-    hinterlandsChecked       <- toggleButtonGetActive hinterlandsCheckButton
-    darkAgesCheckButton      <- builderGetObject builder castToCheckButton "darkAgesCheckButton"
-    darkAgesChecked          <- toggleButtonGetActive darkAgesCheckButton
-    guildsCheckButton        <- builderGetObject builder castToCheckButton "guildsCheckButton"
-    guildsChecked            <- toggleButtonGetActive guildsCheckButton
-    envoyCheckButton         <- builderGetObject builder castToCheckButton "envoyCheckButton"
-    envoyChecked             <- toggleButtonGetActive envoyCheckButton
-    blackMarketCheckButton   <- builderGetObject builder castToCheckButton "blackMarketCheckButton"
-    blackMarketChecked       <- toggleButtonGetActive blackMarketCheckButton
-    governorCheckButton      <- builderGetObject builder castToCheckButton "governorCheckButton"
-    governorChecked          <- toggleButtonGetActive governorCheckButton
-    stashCheckButton         <- builderGetObject builder castToCheckButton "stashCheckButton"
-    stashChecked             <- toggleButtonGetActive stashCheckButton
-    walledVillageCheckButton <- builderGetObject builder castToCheckButton "walledVillageCheckButton"
-    walledVillageChecked     <- toggleButtonGetActive walledVillageCheckButton
-    customCheckButton        <- builderGetObject builder castToCheckButton "customCheckButton"
-    customChecked            <- toggleButtonGetActive customCheckButton
+    dominionCheckButton      <- liftIO $ builderGetObject builder castToCheckButton "dominionCheckButton"
+    dominionChecked          <- liftIO $ toggleButtonGetActive dominionCheckButton
+    intrigueCheckButton      <- liftIO $ builderGetObject builder castToCheckButton "intrigueCheckButton"
+    intrigueChecked          <- liftIO $ toggleButtonGetActive intrigueCheckButton
+    seasideCheckButton       <- liftIO $ builderGetObject builder castToCheckButton "seasideCheckButton"
+    seasideChecked           <- liftIO $ toggleButtonGetActive seasideCheckButton
+    alchemyCheckButton       <- liftIO $ builderGetObject builder castToCheckButton "alchemyCheckButton"
+    alchemyChecked           <- liftIO $ toggleButtonGetActive alchemyCheckButton
+    prosperityCheckButton    <- liftIO $ builderGetObject builder castToCheckButton "prosperityCheckButton"
+    prosperityChecked        <- liftIO $ toggleButtonGetActive prosperityCheckButton
+    cornucopiaCheckButton    <- liftIO $ builderGetObject builder castToCheckButton "cornucopiaCheckButton"
+    cornucopiaChecked        <- liftIO $ toggleButtonGetActive cornucopiaCheckButton
+    hinterlandsCheckButton   <- liftIO $ builderGetObject builder castToCheckButton "hinterlandsCheckButton"
+    hinterlandsChecked       <- liftIO $ toggleButtonGetActive hinterlandsCheckButton
+    darkAgesCheckButton      <- liftIO $ builderGetObject builder castToCheckButton "darkAgesCheckButton"
+    darkAgesChecked          <- liftIO $ toggleButtonGetActive darkAgesCheckButton
+    guildsCheckButton        <- liftIO $ builderGetObject builder castToCheckButton "guildsCheckButton"
+    guildsChecked            <- liftIO $ toggleButtonGetActive guildsCheckButton
+    envoyCheckButton         <- liftIO $ builderGetObject builder castToCheckButton "envoyCheckButton"
+    envoyChecked             <- liftIO $ toggleButtonGetActive envoyCheckButton
+    blackMarketCheckButton   <- liftIO $ builderGetObject builder castToCheckButton "blackMarketCheckButton"
+    blackMarketChecked       <- liftIO $ toggleButtonGetActive blackMarketCheckButton
+    governorCheckButton      <- liftIO $ builderGetObject builder castToCheckButton "governorCheckButton"
+    governorChecked          <- liftIO $ toggleButtonGetActive governorCheckButton
+    stashCheckButton         <- liftIO $ builderGetObject builder castToCheckButton "stashCheckButton"
+    stashChecked             <- liftIO $ toggleButtonGetActive stashCheckButton
+    walledVillageCheckButton <- liftIO $ builderGetObject builder castToCheckButton "walledVillageCheckButton"
+    walledVillageChecked     <- liftIO $ toggleButtonGetActive walledVillageCheckButton
+    customCheckButton        <- liftIO $ builderGetObject builder castToCheckButton "customCheckButton"
+    customChecked            <- liftIO $ toggleButtonGetActive customCheckButton
 
     -- Emphasis
-    emphasisCheckButton <- builderGetObject builder castToCheckButton "emphasisCheckButton"
-    emphasisChecked     <- toggleButtonGetActive emphasisCheckButton
-    emphasisComboBox    <- builderGetObject builder castToComboBox "emphasisComboBox"
-    emphasisValue       <- comboBoxGetActive emphasisComboBox
+    emphasisCheckButton <- liftIO $ builderGetObject builder castToCheckButton "emphasisCheckButton"
+    emphasisChecked     <- liftIO $ toggleButtonGetActive emphasisCheckButton
+    emphasisComboBox    <- liftIO $ builderGetObject builder castToComboBox "emphasisComboBox"
+    emphasisValue       <- liftIO $ comboBoxGetActive emphasisComboBox
 
     -- Filters
-    actionFilterCheckButton     <- builderGetObject builder castToCheckButton "actionFilterCheckButton"
-    actionFilterChecked         <- toggleButtonGetActive actionFilterCheckButton
-    complexityFilterCheckButton <- builderGetObject builder castToCheckButton "complexityFilterCheckButton"
-    complexityFilterChecked     <- toggleButtonGetActive complexityFilterCheckButton
-    complexityFilterComboBox    <- builderGetObject builder castToComboBox "complexityFilterComboBox"
-    complexityFilterValue       <- comboBoxGetActive complexityFilterComboBox
+    actionFilterCheckButton     <- liftIO $ builderGetObject builder castToCheckButton "actionFilterCheckButton"
+    actionFilterChecked         <- liftIO $ toggleButtonGetActive actionFilterCheckButton
+    complexityFilterCheckButton <- liftIO $ builderGetObject builder castToCheckButton "complexityFilterCheckButton"
+    complexityFilterChecked     <- liftIO $ toggleButtonGetActive complexityFilterCheckButton
+    complexityFilterComboBox    <- liftIO $ builderGetObject builder castToComboBox "complexityFilterComboBox"
+    complexityFilterValue       <- liftIO $ comboBoxGetActive complexityFilterComboBox
 
     -- Rules
-    costVarietyRuleCheckButton   <- builderGetObject builder castToCheckButton "costVarietyRuleCheckButton"
-    costVarietyRuleChecked       <- toggleButtonGetActive costVarietyRuleCheckButton
-    interactivityRuleCheckButton <- builderGetObject builder castToCheckButton "interactivityRuleCheckButton"
-    interactivityRuleChecked     <- toggleButtonGetActive interactivityRuleCheckButton
-    reactionRuleCheckButton      <- builderGetObject builder castToCheckButton "reactionRuleCheckButton"
-    reactionRuleChecked          <- toggleButtonGetActive reactionRuleCheckButton
-    reactionRuleComboBox         <- builderGetObject builder castToComboBox "reactionRuleComboBox"
-    reactionRuleValue            <- comboBoxGetActive reactionRuleComboBox
-    trasherRuleCheckButton       <- builderGetObject builder castToCheckButton "trasherRuleCheckButton"
-    trasherRuleChecked           <- toggleButtonGetActive trasherRuleCheckButton
-    trasherRuleComboBox          <- builderGetObject builder castToComboBox "trasherRuleComboBox"
-    trasherRuleValue             <- comboBoxGetActive trasherRuleComboBox
+    costVarietyRuleCheckButton   <- liftIO $ builderGetObject builder castToCheckButton "costVarietyRuleCheckButton"
+    costVarietyRuleChecked       <- liftIO $ toggleButtonGetActive costVarietyRuleCheckButton
+    interactivityRuleCheckButton <- liftIO $ builderGetObject builder castToCheckButton "interactivityRuleCheckButton"
+    interactivityRuleChecked     <- liftIO $ toggleButtonGetActive interactivityRuleCheckButton
+    reactionRuleCheckButton      <- liftIO $ builderGetObject builder castToCheckButton "reactionRuleCheckButton"
+    reactionRuleChecked          <- liftIO $ toggleButtonGetActive reactionRuleCheckButton
+    reactionRuleComboBox         <- liftIO $ builderGetObject builder castToComboBox "reactionRuleComboBox"
+    reactionRuleValue            <- liftIO $ comboBoxGetActive reactionRuleComboBox
+    trasherRuleCheckButton       <- liftIO $ builderGetObject builder castToCheckButton "trasherRuleCheckButton"
+    trasherRuleChecked           <- liftIO $ toggleButtonGetActive trasherRuleCheckButton
+    trasherRuleComboBox          <- liftIO $ builderGetObject builder castToComboBox "trasherRuleComboBox"
+    trasherRuleValue             <- liftIO $ comboBoxGetActive trasherRuleComboBox
 
     -- Additions
-    colonyAdditionCheckButton   <- builderGetObject builder castToCheckButton "colonyAdditionCheckButton"
-    colonyAdditionChecked       <- toggleButtonGetActive colonyAdditionCheckButton
-    platinumAdditionCheckButton <- builderGetObject builder castToCheckButton "platinumAdditionCheckButton"
-    platinumAdditionChecked     <- toggleButtonGetActive platinumAdditionCheckButton
-    platinumAdditionComboBox    <- builderGetObject builder castToComboBox "platinumAdditionComboBox"
-    platinumAdditionValue       <- comboBoxGetActive platinumAdditionComboBox
-    sheltersAdditionCheckButton <- builderGetObject builder castToCheckButton "sheltersAdditionCheckButton"
-    sheltersAdditionChecked     <- toggleButtonGetActive sheltersAdditionCheckButton
-    sheltersAdditionComboBox    <- builderGetObject builder castToComboBox "sheltersAdditionComboBox"
-    sheltersAdditionValue       <- comboBoxGetActive sheltersAdditionComboBox
+    colonyAdditionCheckButton   <- liftIO $ builderGetObject builder castToCheckButton "colonyAdditionCheckButton"
+    colonyAdditionChecked       <- liftIO $ toggleButtonGetActive colonyAdditionCheckButton
+    platinumAdditionCheckButton <- liftIO $ builderGetObject builder castToCheckButton "platinumAdditionCheckButton"
+    platinumAdditionChecked     <- liftIO $ toggleButtonGetActive platinumAdditionCheckButton
+    platinumAdditionComboBox    <- liftIO $ builderGetObject builder castToComboBox "platinumAdditionComboBox"
+    platinumAdditionValue       <- liftIO $ comboBoxGetActive platinumAdditionComboBox
+    sheltersAdditionCheckButton <- liftIO $ builderGetObject builder castToCheckButton "sheltersAdditionCheckButton"
+    sheltersAdditionChecked     <- liftIO $ toggleButtonGetActive sheltersAdditionCheckButton
+    sheltersAdditionComboBox    <- liftIO $ builderGetObject builder castToComboBox "sheltersAdditionComboBox"
+    sheltersAdditionValue       <- liftIO $ comboBoxGetActive sheltersAdditionComboBox
 
     -- Card lists
-    selectedCardsTreeView        <- builderGetObject builder castToTreeView "cardTreeView"
-    selectedCardsTreeModel       <- liftM2 $ maybe (error "No model for cardTreeView")
-                                                   (return id)
-                                                   (treeViewGetModel selectCardsTreeView)
-    manuallyPickedCardsTreeView  <- builderGetObject builder castToTreeView "pickedCardTreeView"
-    manuallyPickedCardsTreeModel <- liftM2 $ maybe (error "No model for pickedCardTreeView")
-                                             (return id)
-                                             (treeViewGetModel selectCardsTreeView)
+    selectedCardsTreeView        <- liftIO $ builderGetObject builder castToTreeView "cardTreeView"
+    selectedCardsTreeModel       <- getTreeModel selectedCardsTreeView
+    selectedCards                <- liftIO $ liftM (getCardsByName cs) (getAllCardNames selectedCardsTreeModel)
+    manuallyPickedCardsTreeView  <- liftIO $ builderGetObject builder castToTreeView "pickedCardTreeView"
+    manuallyPickedCardsTreeModel <- getTreeModel manuallyPickedCardsTreeView
+    manuallyPickedCards          <- liftIO $ liftM (getCardsByName cs) (getAllCardNames manuallyPickedCardsTreeModel)
 
     -- Widgets
-    outputTextView <- builderGetObject builder castToTextView "outputTextView"
+    outputTextView <- liftIO $ builderGetObject builder castToTextView "outputTextView"
 
     return GUIState {
         -- Sources
@@ -193,92 +189,99 @@ readGUIState builder = do
         guiSheltersAdditionChecked  = sheltersAdditionChecked,
         guiSheltersAdditionValue    = sheltersAdditionValue,
 
+        -- Card lists
+        guiSelectedCards       = selectedCards,
+        guiManuallyPickedCards = manuallyPickedCards,
+
         -- Widgets
         guiOutputTextView = outputTextView
         }
 
-instance SetOptionable GUIState where
-    toSetSelectOptions gst = SetSelectOptions {
-        setSelectSources = sources,
-        setSelectEmphasis = emphasis,
-        setSelectFilters = filters,
-        setSelectRules = rules,
-        setSelectColonyAddition = colony,
-        setSelectPlatinumAddition = platinum,
-        setSelectSheltersAddition = shelters
-        }
-      where sources = Set.fromList $ concat [
-                (if guiDominionChecked      gst then [Dominion] else []),
-                (if guiIntrigueChecked      gst then [Intrigue] else []),
-                (if guiAlchemyChecked       gst then [Alchemy] else []),
-                (if guiSeasideChecked       gst then [Seaside] else []),
-                (if guiProsperityChecked    gst then [Prosperity] else []),
-                (if guiCornucopiaChecked    gst then [Cornucopia] else []),
-                (if guiHinterlandsChecked   gst then [Hinterlands] else []),
-                (if guiDarkAgesChecked      gst then [DarkAges] else []),
-                (if guiGuildsChecked        gst then [Guilds] else []),
-                (if guiEnvoyChecked         gst then [EnvoyPromo] else []),
-                (if guiBlackMarketChecked   gst then [BlackMarketPromo] else []),
-                (if guiGovernorChecked      gst then [GovernorPromo] else []),
-                (if guiStashChecked         gst then [StashPromo] else []),
-                (if guiWalledVillageChecked gst then [WalledVillagePromo] else []),
-                (if guiCustomChecked        gst then [Custom] else [])
-                ]
-            emphasis = if not $ guiEmphasisChecked gst
-                           then NoEmphasis
-                           else case guiEmphasisValue gst of
-                               0 -> RandomEmphasis
-                               1 -> DominionEmphasis
-                               2 -> IntrigueEmphasis
-                               3 -> SeasideEmphasis
-                               4 -> AlchemyEmphasis
-                               5 -> ProsperityEmphasis
-                               6 -> CornucopiaEmphasis
-                               7 -> HinterlandsEmphasis
-                               8 -> DarkAgesEmphasis
-                               9 -> GuildsEmphasis
-            filters = concat [
-                (if guiActionFilterChecked gst then [actionFilter] else []),
-                (if guiComplexityFilterChecked gst
-                 then [complexityFilter $ convertComplexityFilterValue $ guiComplexityFilterValue gst]
-                 else [])
-                ]
-            rules = concat [
-                (if guiReactionRuleChecked gst
-                 then [reactionRule $ convertReactionRuleValue $ guiReactionRuleValue gst]
-                 else []),
-                (if guiTrasherRuleChecked gst
-                 then [trasherRule $ convertTrasherRuleValue $ guiTrasherRuleValue gst]
-                 else []),
-                (if guiInteractivityRuleChecked gst
-                 then [interactivityRule 2]
-                 else []),
-                (if guiCostVarietyRuleChecked gst
-                 then [costVarietyRule]
-                 else [])
-                ]
-            colony = if guiColonyAdditionChecked gst then RandomColony else NoColony
-            platinum = if not $ guiPlatinumAdditionChecked gst
-                       then NoPlatinum
-                       else case guiPlatinumAdditionValue gst of
-                           0 -> RandomPlatinum
-                           1 -> PlatinumWithColony
-            shelters = if not $ guiSheltersAdditionChecked gst
-                       then NoShelters
-                       else case guiSheltersAdditionValue gst of
-                           0 -> SheltersWithDarkAges
-                           1 -> RandomShelters
-            convertComplexityFilterValue v = case v of
-                0 -> LowComplexityOnly
-                1 -> MediumComplexityOrLower
-                2 -> HighComplexityOrLower
-            convertReactionRuleValue v = case v of
-                0 -> RequireMoat
-                1 -> RequireBlocker
-                2 -> RequireReaction
-            convertTrasherRuleValue v = case v of
-                0 -> TrasherWithCurse
-                1 -> AlwaysTrasher
+-- | Builds a 'SetSelectOptions' object based on the GUI state and a card pool.
+mkSetSelectOptions :: GUIState -> [Card] -> SetSelectOptions
+mkSetSelectOptions gst cs = SetSelectOptions {
+    setSelectPool = cs, -- TODO
+    setSelectManualPicks = [], -- TODO
+    setSelectSources = sources,
+    setSelectEmphasis = emphasis,
+    setSelectFilters = filters,
+    setSelectRules = rules,
+    setSelectColonyAddition = colony,
+    setSelectPlatinumAddition = platinum,
+    setSelectSheltersAddition = shelters
+    }
+  where sources = concat [
+            (if guiDominionChecked      gst then [Dominion] else []),
+            (if guiIntrigueChecked      gst then [Intrigue] else []),
+            (if guiAlchemyChecked       gst then [Alchemy] else []),
+            (if guiSeasideChecked       gst then [Seaside] else []),
+            (if guiProsperityChecked    gst then [Prosperity] else []),
+            (if guiCornucopiaChecked    gst then [Cornucopia] else []),
+            (if guiHinterlandsChecked   gst then [Hinterlands] else []),
+            (if guiDarkAgesChecked      gst then [DarkAges] else []),
+            (if guiGuildsChecked        gst then [Guilds] else []),
+            (if guiEnvoyChecked         gst then [EnvoyPromo] else []),
+            (if guiBlackMarketChecked   gst then [BlackMarketPromo] else []),
+            (if guiGovernorChecked      gst then [GovernorPromo] else []),
+            (if guiStashChecked         gst then [StashPromo] else []),
+            (if guiWalledVillageChecked gst then [WalledVillagePromo] else []),
+            (if guiCustomChecked        gst then [Custom] else [])
+            ]
+        emphasis = if not $ guiEmphasisChecked gst
+                       then NoEmphasis
+                       else case guiEmphasisValue gst of
+                           0 -> RandomEmphasis
+                           1 -> DominionEmphasis
+                           2 -> IntrigueEmphasis
+                           3 -> SeasideEmphasis
+                           4 -> AlchemyEmphasis
+                           5 -> ProsperityEmphasis
+                           6 -> CornucopiaEmphasis
+                           7 -> HinterlandsEmphasis
+                           8 -> DarkAgesEmphasis
+                           9 -> GuildsEmphasis
+        filters = concat [
+            (if guiActionFilterChecked gst then [actionFilter] else []),
+            (if guiComplexityFilterChecked gst
+             then [complexityFilter $ convertComplexityFilterValue $ guiComplexityFilterValue gst]
+             else [])
+            ]
+        rules = concat [
+            (if guiReactionRuleChecked gst
+             then [reactionRule $ convertReactionRuleValue $ guiReactionRuleValue gst]
+             else []),
+            (if guiTrasherRuleChecked gst
+             then [trasherRule $ convertTrasherRuleValue $ guiTrasherRuleValue gst]
+             else []),
+            (if guiInteractivityRuleChecked gst
+             then [interactivityRule 2]
+             else []),
+            (if guiCostVarietyRuleChecked gst
+             then [costVarietyRule]
+             else [])
+            ]
+        colony = if guiColonyAdditionChecked gst then RandomColony else NoColony
+        platinum = if not $ guiPlatinumAdditionChecked gst
+                   then NoPlatinum
+                   else case guiPlatinumAdditionValue gst of
+                       0 -> RandomPlatinum
+                       1 -> PlatinumWithColony
+        shelters = if not $ guiSheltersAdditionChecked gst
+                   then NoShelters
+                   else case guiSheltersAdditionValue gst of
+                       0 -> SheltersWithDarkAges
+                       1 -> RandomShelters
+        convertComplexityFilterValue v = case v of
+            0 -> LowComplexityOnly
+            1 -> MediumComplexityOrLower
+            2 -> HighComplexityOrLower
+        convertReactionRuleValue v = case v of
+            0 -> RequireMoat
+            1 -> RequireBlocker
+            2 -> RequireReaction
+        convertTrasherRuleValue v = case v of
+            0 -> TrasherWithCurse
+            1 -> AlwaysTrasher
 
 main :: IO ()
 main = do
@@ -290,39 +293,43 @@ main = do
     window <- builderGetObject builder castToWindow "dsgenWindow"
     on window deleteEvent (liftIO mainQuit >> return False)
 
-    -- Load cards, displaying popup and quitting if this fails
+    -- Get widgets
+    selectedCardsTreeView  <- builderGetObject builder castToTreeView "cardTreeView"
+    selectedCardsTreeModel <- liftM (either (\x -> error "No selectedCardsTreeView model")
+                                            id)
+                                    (runErrorT $ getTreeModel selectedCardsTreeView)
+
+    -- Load cards
     cardFiles <- cardFileNames
     cardse <- runErrorT $ readCardFiles cardFiles
     case cardse of
         Left s -> startupErrorQuit $ show s
         Right cs -> do
             -- Hook up signals
-            outputTextView <- builderGetObject builder castToTextView "outputTextView"
-
             selectSetButton <- builderGetObject builder castToButton "selectSetButton"
-            on selectSetButton buttonActivated $ selectAndDisplaySet builder window outputTextView cs
+            on selectSetButton buttonActivated $ fillSelection builder selectedCardsTreeModel cs
 
             widgetShowAll window
             mainGUI
 
-selectAndDisplaySet :: Builder -> Window -> TextView -> [Card] -> IO ()
-selectAndDisplaySet b w tv cs = do
-    gst <- readGUIState b
-    let ssos = toSetSelectOptions gst
-    sgre <- runErrorT $ selectSet ssos Set.empty $ Set.fromList cs
+fillSelection :: TreeModelClass self => Builder -> self -> [Card] -> IO ()
+fillSelection b tm cs = do
+    listStoreAppend tm "woo" -- TODO
+{-
+    runErrorT $ do
+        gst <- readGUIState b
+        let ssos = toSetSelectOptions gst
+        return $ displayCardOutput tv $ setKingdomCards $ selectSet ssos cs
     case sgre of
         Left e -> displayOutput tv e
-        Right sgr -> displayCardOutput tv $ Set.toList $ setKingdomCards sgr
-
--- | Displays a list of pretty-formatted card names in a TextView.
-displayCardOutput :: TextView -> [Card] -> IO ()
-displayCardOutput tv cs = displayOutput tv $ intercalate ", " $ sort $ map showCardName cs
+        Right sgr -> displayCardOutput tv $ setKingdomCards sgr
 
 -- | Displays text in a TextView.
 displayOutput :: TextView -> String -> IO ()
 displayOutput tv s = do
     buf <- textViewGetBuffer tv
     textBufferSetText buf s
+-}
 
 {- | Displays an error messagebox and then immediately ends the program once
 the box has been dismissed -}
@@ -355,12 +362,29 @@ cardFileNames = mapM getPath files
                  "cornucopia", "hinterlands", "darkAges", "guilds", "promos",
                  "custom"]
 
-getAllCardListNames :: TreeModelClass self => self -> IO [String]
-getAllCardListNames = getAllValues self (treeModelGetIterFirst self)
+{- | Given a list of cards, and a list of card names, returns just the cards
+with the names specified. -}
+getCardsByName :: [Card] -> [String] -> [Card]
+getCardsByName [] _ = []
+getCardsByName (c:cs) ss = if elem (cardName c) ss then c : rest else rest
+  where rest = getCardsByName cs ss
+
+-- | Gets all strings in the first column of a 'TreeModel'.
+getAllCardNames :: TreeModelClass self => self -> IO [String]
+getAllCardNames tm = getAllValues tm =<< (treeModelGetIterFirst tm)
   where getAllValues tm iterm =
             case iterm of
-                Nothing -> []
+                Nothing -> return []
                 Just iter -> do
-                    val <- treeModelGetValue self iter (makeColumnIdString 0)
-                    iterm' <- treeModelIterNext self iter
+                    val <- treeModelGetValue tm iter (makeColumnIdString 0)
+                    iterm' <- treeModelIterNext tm iter
                     liftM (val:) (getAllValues tm iterm')
+
+-- | Gets a 'TreeModel' from a 'TreeView', throwing an error if no model exists.
+getTreeModel :: TreeViewClass self => self -> ErrorT String IO TreeModel
+getTreeModel tv = do
+    tmm <- liftIO $ treeViewGetModel tv
+    case tmm of
+        Nothing -> throwError "No model defined for TreeView"
+        Just tm -> return tm
+

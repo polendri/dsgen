@@ -15,13 +15,6 @@
       <!-- column-name Source -->
       <column type="gchararray"/>
     </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Test</col>
-        <col id="1">0</col>
-        <col id="2" translatable="yes">Dominion</col>
-      </row>
-    </data>
   </object>
   <object class="GtkListStore" id="complexityFilterListStore">
     <columns>

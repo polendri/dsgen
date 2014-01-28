@@ -12,9 +12,24 @@ module Dsgen.SetSelect
     PlatinumAdditionOption(..),
     SheltersAdditionOption(..),
     SetSelectOptions(..),
-    SetOptionable(..),
     SetSelectResult(..),
     SetSelectError,
+
+    -- * Filters
+    actionFilter,
+    complexityFilter,
+
+    -- * Rules
+    costVarietyRule,
+    interactivityRule,
+    reactionRule,
+    trasherRule,
+    mkEmphasisRule,
+
+    -- * Additions
+    colonyAddition,
+    platinumAddition,
+    sheltersAddition,
 
     -- * Set selection functions
     selectSet

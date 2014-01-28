@@ -64,20 +64,16 @@ data SheltersAdditionOption = NoShelters | SheltersWithDarkAges | RandomShelters
 
 {- | Contains options for customizing the selection of Kingdom card sets -}
 data SetSelectOptions = SetSelectOptions {
+    setSelectPool :: [Card],
+    setSelectManualPicks :: [Card],
     setSelectSources :: [CardSource],
     setSelectEmphasis :: Emphasis,
     setSelectFilters :: [Filter],
     setSelectRules :: [Rule],
-    setSelectManualPicks :: [Card],
-    setSelectCardPool :: [Card],
     setSelectColonyAddition :: ColonyAdditionOption,
     setSelectPlatinumAddition :: PlatinumAdditionOption,
     setSelectSheltersAddition :: SheltersAdditionOption
     }
-
--- | Typeclass for types which can be converted into 'SetSelectOptions'
-class SetOptionable a where
-    toSetSelectOptions :: a -> SetSelectOptions
 
 -- | Contains the results of selecting a set of Kingdom cards.
 data SetSelectResult = SetSelectResult {
@@ -203,7 +199,7 @@ selectSet ssos = do
     kcs <- if length (setSelectManualPicks ssos) >= 10
            then return []
            else selectKingdomCards (setSelectManualPicks ssos)
-                                   ((setSelectCardPool ssos) \\ (setSelectManualPicks ssos))
+                                   ((setSelectPool ssos) \\ (setSelectManualPicks ssos))
                                    (setSelectSources ssos)
                                    (setSelectFilters ssos)
                                    rules'

@@ -1,7 +1,5 @@
 High:
- * Undo Set refactor
- * Hook new UI into code
- * Get set generation working
+ * Refactor GUI code to load all widgets from the builder just once
 
 Medium:
  * Distinguish between "can trash anything" and "can trash certain types of cards"
