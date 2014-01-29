@@ -2,8 +2,11 @@ module Dsgen.GUIState (
     GUI(..),
     GUIState(..),
     readGUI,
-    readGUIState
+    getGUIState,
+    mkSetSelectOptions
     ) where
+
+import Data.List((\\))
 
 
 -- | Holds all the relevant widgets from the UI.
@@ -51,7 +54,15 @@ data GUI = GUI {
     -- Card lists
     randomCardsTreeModel :: TreeModel,
     manualCardsTreeModel :: TreeModel,
-    vetoedCardsTreeModel :: TreeModel
+    vetoedCardsTreeModel :: TreeModel,
+
+    -- Buttons
+    addManualCardButton :: Button,
+    rmvManualCardButton :: Button,
+    keepCardsButton     :: Button,
+    vetoCardsButton     :: Button,
+    addVetoedCardButton :: Button,
+    rmvVetoedCardButton :: Button
     }
 
 {- | Holds the state of all GUI widgets which we might be interested in
@@ -147,11 +158,20 @@ readGUI b = do
 
     -- Card lists
     randomCardsTreeView  <- liftIO $ builderGetObject b castToTreeView "randomCardsTreeView"
-    randomCardsTreeModel <- getTreeModel randomCardsTreeView
+    randomCardsTM <- getTreeModel randomCardsTreeView
     manualCardsTreeView  <- liftIO $ builderGetObject b castToTreeView "manualCardsTreeView"
-    manualCardsTreeModel <- getTreeModel manualCardsTreeView
+    manualCardsTM <- getTreeModel manualCardsTreeView
     vetoedCardsTreeView  <- liftIO $ builderGetObject b castToTreeView "vetoedCardsTreeView"
-    vetoedCardsTreeModel <- getTreeModel vetoedCardsTreeView
+    vetoedCardsTM <- getTreeModel vetoedCardsTreeView
+
+    -- Buttons
+    addManualCardButton  <- liftIO $ builderGetObject b castToButton "addManualCardButton"
+    rmvManualCardsButton <- liftIO $ builderGetObject b castToButton "rmvManualCardsButton"
+    keepCardsButton      <- liftIO $ builderGetObject b castToButton "keepCardsButton"
+    vetoCardsButton      <- liftIO $ builderGetObject b castToButton "vetoCardsButton"
+    addVetoedCardButton  <- liftIO $ builderGetObject b castToButton "addVetoedCardButton"
+    rmvVetoedCardsButton <- liftIO $ builderGetObject b castToButton "rmvVetoedCardsButton"
+    selectSetButton      <- liftIO $ builderGetObject b castToButton "selectSetButton"
 
     return $ GUI {
         -- Sources
@@ -294,8 +314,91 @@ getGUIState gui cs = do
         -- Card lists
         randomCardsList = randomCardsCL,
         manualCardsList = manualCardsCL,
-        vetoedCardsList = vetoedCardsCL
+        vetoedCardsList = vetoedCardsCL,
         }
+
+-- | Builds a 'SetSelectOptions' object based on the GUI state and a card pool.
+mkSetSelectOptions :: GUIState -> [Card] -> SetSelectOptions
+mkSetSelectOptions gst cs = SetSelectOptions {
+    ssoPickCount        = 10 - (length manualCards) -- TODO: Non-hardcode 10
+    ssoSelectPool       = cs \\ manualCards \\ (vetoedCardsList gst),
+    ssoManualPicks      = manualCards,
+    ssoSources          = sources,
+    sssoEmphasis        = emphasis,
+    ssoFilters          = filters,
+    ssoRules            = rules,
+    ssoColPlatAddition  = colPlat,
+    ssoSheltersAddition = shelters
+    }
+  where manualCards = manualCardsList gst
+        sources = concat [
+            (if dominionCheckedState      gst then [Dominion]           else []),
+            (if intrigueCheckedState      gst then [Intrigue]           else []),
+            (if alchemyCheckedState       gst then [Alchemy]            else []),
+            (if seasideCheckedState       gst then [Seaside]            else []),
+            (if prosperityCheckedState    gst then [Prosperity]         else []),
+            (if cornucopiaCheckedState    gst then [Cornucopia]         else []),
+            (if hinterlandsCheckedState   gst then [Hinterlands]        else []),
+            (if darkAgesCheckedState      gst then [DarkAges]           else []),
+            (if guildsCheckedState        gst then [Guilds]             else []),
+            (if envoyCheckedState         gst then [EnvoyPromo]         else []),
+            (if blackMarketCheckedState   gst then [BlackMarketPromo]   else []),
+            (if governorCheckedState      gst then [GovernorPromo]      else []),
+            (if stashCheckedState         gst then [StashPromo]         else []),
+            (if walledVillageCheckedState gst then [WalledVillagePromo] else []),
+            (if customCheckedState        gst then [Custom]             else [])
+            ]
+        emphasis = if not $ emphasisCheckedState gst
+                   then NoEmphasis
+                   else case emphasisValue gst of
+                       0 -> RandomEmphasis
+                       1 -> DominionEmphasis
+                       2 -> IntrigueEmphasis
+                       3 -> SeasideEmphasis
+                       4 -> AlchemyEmphasis
+                       5 -> ProsperityEmphasis
+                       6 -> CornucopiaEmphasis
+                       7 -> HinterlandsEmphasis
+                       8 -> DarkAgesEmphasis
+                       9 -> GuildsEmphasis
+        filters = concat [
+            (if actionFilterCheckedState gst then [actionFilter] else []),
+            (if complexityFilterCheckedState gst
+             then [complexityFilter $ convertComplexityFilterValue $ complexityFilterValue gst]
+             else [])
+            ]
+        rules = concat [
+            (if reactionRuleCheckedState gst
+             then [reactionRule $ convertReactionRuleValue $ reactionRuleValue gst]
+             else []),
+            (if trasherRuleCheckedState gst
+             then [trasherRule $ convertTrasherRuleValue $ trasherRuleValue gst]
+             else []),
+            (if interactivityRuleCheckedState gst
+             then [interactivityRule $ convertInteractivityRuleValue $ interactivityRuleValue gst]
+             else []),
+            (if costVarietyRuleCheckedState gst
+             then [costVarietyRule]
+             else [])
+            ]
+        colPlat = if ColPlatAdditionCheckedState gst then RandomColPlat else NoColPlat
+        shelters = if not $ guiSheltersAdditionCheckedState gst
+                   then NoShelters
+                   else case guiSheltersAdditionValue gst of
+                       0 -> SheltersWithDarkAges
+                       1 -> RandomShelters
+        convertComplexityFilterValue v = case v of
+            0 -> LowComplexityOnly
+            1 -> MediumComplexityOrLower
+            2 -> HighComplexityOrLower
+        convertReactionRuleValue v = case v of
+            0 -> RequireMoat
+            1 -> RequireBlocker
+            2 -> RequireReaction
+        convertTrasherRuleValue v = case v of
+            0 -> TrasherWithCurse
+            1 -> AlwaysTrasher
+        convertTrasherRuleValue v = v + 1
 
 
 {- Helper functions -}

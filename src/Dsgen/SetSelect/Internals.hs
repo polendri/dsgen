@@ -50,8 +50,8 @@ data TrasherRuleOption  = TrasherWithCurse | AlwaysTrasher
 -- | Determines whether or not to include an addition.
 type Addition = IO Bool
 
--- | Defines options for the Colony addition.
-data ColonyAdditionOption = NoColony | RandomColony
+-- | Defines options for the Colony/Platinum addition.
+data ColPlatAdditionOption = NoColPlat | RandomColPlat
   deriving (Eq, Ord, Read, Show)
 
 -- | Defines options for the Platinum addition.
@@ -64,23 +64,22 @@ data SheltersAdditionOption = NoShelters | SheltersWithDarkAges | RandomShelters
 
 {- | Contains options for customizing the selection of Kingdom card sets -}
 data SetSelectOptions = SetSelectOptions {
-    setSelectPool :: [Card],
-    setSelectManualPicks :: [Card],
-    setSelectSources :: [CardSource],
-    setSelectEmphasis :: Emphasis,
-    setSelectFilters :: [Filter],
-    setSelectRules :: [Rule],
-    setSelectColonyAddition :: ColonyAdditionOption,
-    setSelectPlatinumAddition :: PlatinumAdditionOption,
-    setSelectSheltersAddition :: SheltersAdditionOption
+    ssoPickCount        :: Int,
+    ssoPool             :: [Card],
+    ssoManualPicks      :: [Card],
+    ssoSources          :: [CardSource],
+    ssoEmphasis         :: Emphasis,
+    ssoFilters          :: [Filter],
+    ssoRules            :: [Rule],
+    ssoColPlatAddition  :: ColPlatAdditionOption,
+    ssoSheltersAddition :: SheltersAdditionOption
     }
 
 -- | Contains the results of selecting a set of Kingdom cards.
 data SetSelectResult = SetSelectResult {
-    setKingdomCards :: [Card],
-    setUsesColony   :: Bool,
-    setUsesPlatinum :: Bool,
-    setUsesShelters :: Bool
+    ssrKingdomCards :: [Card],
+    ssrUsesColPlat  :: Bool,
+    ssrUsesShelters :: Bool
     }
   deriving (Show)
 
@@ -164,18 +163,10 @@ mkEmphasisRule e =
 {- Additions -}
 
 {- Decides whether or not to include Colony. -}
-colonyAddition :: ColonyAdditionOption -> IO Bool
-colonyAddition ca = case ca of
-    NoColony     -> return False
-    RandomColony -> randomIO :: IO Bool
-
-{- Decides whether or not to include Platinum. -}
-platinumAddition :: PlatinumAdditionOption -> Bool -> IO Bool
-platinumAddition pa c =
-    case pa of
-        NoPlatinum         -> return False
-        RandomPlatinum     -> randomIO :: IO Bool
-        PlatinumWithColony -> return c
+colPlatAddition :: ColPlatAdditionOption -> IO Bool
+colPlatAddition ca = case ca of
+    NoColPlat     -> return False
+    RandomColPlat -> randomIO :: IO Bool
 
 {- Decides randomly whether or not to include Shelters. -}
 sheltersAddition :: SheltersAdditionOption -> Bool -> IO Bool
@@ -194,57 +185,62 @@ additions such as Colonies or Shelters. -}
 selectSet :: SetSelectOptions -- ^ Defines options for how to select a list.
           -> ErrorT SetSelectError IO SetSelectResult
 selectSet ssos = do
-    let rules  = setSelectRules ssos
-    let rules' = maybe rules (:rules) $ mkEmphasisRule (setSelectEmphasis ssos)
-    kcs <- if length (setSelectManualPicks ssos) >= 10
+    let rules  = ssRules ssos
+    let rules' = maybe rules (:rules) $ mkEmphasisRule (ssEmphasis ssos)
+    kcs <- if length (ssManualPicks ssos) >= ssPickCount ssos
            then return []
-           else selectKingdomCards (setSelectManualPicks ssos)
-                                   ((setSelectPool ssos) \\ (setSelectManualPicks ssos))
-                                   (setSelectSources ssos)
-                                   (setSelectFilters ssos)
+           else selectKingdomCards (ssPickCount ssos)
+                                   (ssPool ssos)
+                                   (ssManualPicks ssos)
+                                   (ssSources ssos)
+                                   (ssFilters ssos)
                                    rules'
-    useColony   <- liftIO $ colonyAddition $ setSelectColonyAddition ssos
-    usePlatinum <- liftIO $ platinumAddition (setSelectPlatinumAddition ssos) useColony
-    useShelters <- liftIO $ sheltersAddition (setSelectSheltersAddition ssos) (setSelectEmphasis ssos == DarkAgesEmphasis)
+    useColPlat  <- liftIO $ colPlatAddition $ ssColPlatAddition ssos
+    useShelters <- liftIO $ sheltersAddition (ssSheltersAddition ssos) (ssEmphasis ssos == DarkAgesEmphasis)
+
     return SetSelectResult {
-        setKingdomCards = kcs,
-        setUsesColony   = useColony,
-        setUsesPlatinum = usePlatinum,
-        setUsesShelters = useShelters
+        ssrKingdomCards = kcs,
+        ssrUsesColPlat  = useColPlat,
+        ssrUsesShelters = useShelters
     }
 
 {- | Chooses cards to supplement an initial list of cards such that it contains
 10 cards total. The set of 10 satisfies all rules provided, and the
 supplemented cards satisfy the card, cardsource, and filter restrictions
 provided. -}
-selectKingdomCards :: [Card]         -- ^ The initial selection of cards to build onto.
+selectKingdomCards :: Int            -- ^ The number of cards to pick.
+                   -> [Card]         -- ^ The initial selection of cards to build onto.
                    -> [Card]         -- ^ The pool of cards to choose from.
                    -> [CardSource]   -- ^ The list of card sources to filter on.
                    -> [Filter]       -- ^ The list of filters to apply to the pool.
                    -> [Rule]         -- ^ The list of rules to apply when choosing a set.
                    -> ErrorT SetSelectError IO [Card]
-selectKingdomCards cs pool ss fs rs = do
+selectKingdomCards n cs pool ss fs rs = do
     return pool
     let sourced = filter (\x -> elem (cardSource x) ss) pool
     let filtered = foldr filter sourced fs
-    if length filtered < 10 - length cs
-     then throwError "Not enough sources selected; less than 10 cards left after filtering."
+    if length filtered < n
+     then throwError $ "Not enough sources selected; less than " ++
+                       (show n) ++
+                       " cards left after filtering."
      else do
          cards <- liftIO $ shuffle filtered
          let pared = fullyPareSet rs cs cards
          case pared of
              Left s -> throwError s
-             Right cs' -> if length cs' > 10 - length cs
-                          then throwError "Rules are too strict; unable to reduce down to the required amount of supplementary cards."
+             Right cs' -> if length cs' > n
+                          then throwError $ "Rules are too strict; unable to find " ++
+                                            (show n) ++
+                                            " cards which satisfy the selected requirements."
                           else return cs'
 
 {- | Given a list of rules, a list of preset cards, and a list of cards to
-choose from, reduces the choice list down such that there are 10 cards total,
+choose from, reduces the choice list down such that there are n cards total,
 and returns the cards chosen. -}
-fullyPareSet :: [Rule] -> [Card] -> [Card] -> Either String [Card]
-fullyPareSet rs pcs cs
-    | length pcs + length cs <= 10 = Right cs
-    | otherwise       = pareSet rs pcs cs >>= fullyPareSet rs pcs
+fullyPareSet :: Int -> [Rule] -> [Card] -> [Card] -> Either String [Card]
+fullyPareSet n rs pcs cs
+    | length cs <= n = Right cs
+    | otherwise      = pareSet rs pcs cs >>= fullyPareSet rs pcs
 
 {- | Removes one card from a list of cards, such that the provided list of
 rules are all still satisfied by the new, smaller list. -}
