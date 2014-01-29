@@ -77,6 +77,44 @@
       </row>
     </data>
   </object>
+  <object class="GtkListStore" id="interactivityRuleListStore">
+    <columns>
+      <!-- column-name gint1 -->
+      <column type="gint"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">1</col>
+      </row>
+      <row>
+        <col id="0">2</col>
+      </row>
+      <row>
+        <col id="0">3</col>
+      </row>
+      <row>
+        <col id="0">4</col>
+      </row>
+      <row>
+        <col id="0">5</col>
+      </row>
+      <row>
+        <col id="0">6</col>
+      </row>
+      <row>
+        <col id="0">7</col>
+      </row>
+      <row>
+        <col id="0">8</col>
+      </row>
+      <row>
+        <col id="0">9</col>
+      </row>
+      <row>
+        <col id="0">10</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkImage" id="keepCardImage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -91,48 +129,6 @@
       <!-- column-name Source -->
       <column type="gchararray"/>
     </columns>
-  </object>
-  <object class="GtkListStore" id="randomCardsListStore">
-    <columns>
-      <!-- column-name Name -->
-      <column type="gchararray"/>
-      <!-- column-name Cost -->
-      <column type="gint"/>
-      <!-- column-name Source -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="reactionRuleListStore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Moat</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">an attack blocker</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">a reaction card</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkImage" id="removeCardImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-remove</property>
-  </object>
-  <object class="GtkImage" id="removeCardImage1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-remove</property>
-  </object>
-  <object class="GtkImage" id="saveOptionsAsImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-save-as</property>
   </object>
   <object class="GtkWindow" id="mainWindow">
     <property name="can_focus">False</property>
@@ -629,8 +625,10 @@
                               <object class="GtkButton" id="cardPoolCustomizeButton">
                                 <property name="label" translatable="yes">Customize...</property>
                                 <property name="visible">True</property>
+                                <property name="sensitive">False</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Choose exactly which cards are in the card pool.</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -758,8 +756,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Ensures that all card picked will be regular old Action or Reaction cards.</property>
-                                        <property name="tooltip_text" translatable="yes">Ensures that all card picked will be regular old Action or Reaction cards.</property>
+                                        <property name="tooltip_text" translatable="yes">Ensures that all cards picked will be regular old Action or Reaction cards.</property>
                                         <child>
                                           <object class="GtkCheckButton" id="actionFilterCheckButton">
                                             <property name="visible">True</property>
@@ -797,8 +794,10 @@
                                       <object class="GtkButton" id="customFiltersButton">
                                         <property name="label" translatable="yes">Custom FIlters...</property>
                                         <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
                                         <property name="can_focus">False</property>
                                         <property name="receives_default">True</property>
+                                        <property name="tooltip_text" translatable="yes">Enable or disable custom filters.</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -955,7 +954,7 @@
                                       <object class="GtkLabel" id="trasherRuleLabel1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">Require a trasher card </property>
+                                        <property name="label" translatable="yes">Require an all-purpose trasher card </property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -1021,11 +1020,11 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkComboBox" id="trasherRuleComboBox1">
+                                      <object class="GtkComboBox" id="interactivityRuleComboBox">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="model">trasherRuleListStore</property>
-                                        <property name="active">0</property>
+                                        <property name="model">interactivityRuleListStore</property>
+                                        <property name="active">1</property>
                                         <child>
                                           <object class="GtkCellRendererText" id="cellrenderertext3"/>
                                           <attributes>
@@ -1106,8 +1105,10 @@
                                       <object class="GtkButton" id="customRulesButton">
                                         <property name="label" translatable="yes">Custom Rules...</property>
                                         <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
                                         <property name="can_focus">False</property>
                                         <property name="receives_default">True</property>
+                                        <property name="tooltip_text" translatable="yes">Enable or disable custom rules.</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -1175,7 +1176,7 @@
                                   <object class="GtkBox" id="colPlatAdditionBox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="tooltip_text" translatable="yes">Randomly decides whether the game should be played with Colony. (Requires the Prosperity expansion)</property>
+                                    <property name="tooltip_text" translatable="yes">Randomly decides whether the game should be played with Colony and Platinum. (Requires the Prosperity expansion)</property>
                                     <child>
                                       <object class="GtkCheckButton" id="colPlatAdditionCheckButton">
                                         <property name="visible">True</property>
@@ -1688,10 +1689,10 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="selectedCardsLabel1">
+                      <object class="GtkLabel" id="vetoedCardsLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Randomly-selected Cards&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Vetoed Cards&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
                     </child>
@@ -1749,7 +1750,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Generate a random set based on the sources, filters and rules specified.</property>
+                <property name="tooltip_text" translatable="yes">Generate a random set based on the card pool, filters and rules specified.</property>
                 <property name="image">selectSetImage</property>
               </object>
               <packing>
@@ -1768,6 +1769,48 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkListStore" id="randomCardsListStore">
+    <columns>
+      <!-- column-name Name -->
+      <column type="gchararray"/>
+      <!-- column-name Cost -->
+      <column type="gint"/>
+      <!-- column-name Source -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="reactionRuleListStore">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Moat</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">an attack blocker</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">a reaction card</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkImage" id="removeCardImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-remove</property>
+  </object>
+  <object class="GtkImage" id="removeCardImage1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-remove</property>
+  </object>
+  <object class="GtkImage" id="saveOptionsAsImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-save-as</property>
   </object>
   <object class="GtkImage" id="saveOptionsImage">
     <property name="visible">True</property>
