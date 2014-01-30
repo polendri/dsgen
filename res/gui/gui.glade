@@ -1451,7 +1451,6 @@
                                     <child>
                                       <object class="GtkButton" id="vetoCardsButton">
                                         <property name="visible">True</property>
-                                        <property name="sensitive">False</property>
                                         <property name="can_focus">False</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
@@ -1469,7 +1468,6 @@
                                     <child>
                                       <object class="GtkButton" id="keepCardsButton">
                                         <property name="visible">True</property>
-                                        <property name="sensitive">False</property>
                                         <property name="can_focus">False</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
