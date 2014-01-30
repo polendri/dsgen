@@ -62,7 +62,7 @@ data CardSource = Dominion
                 | Custom
     deriving (Eq, Ord, Read, Show)
 
--- | An data type which represents either a fixed integer, or 'Variable'.
+-- | A data type which represents either a fixed integer, or 'Variable'.
 data Amount = FixedAmount Int | Variable
     deriving (Eq, Show)
 
@@ -72,6 +72,10 @@ instance Read Amount where
                     else case reads s :: [(Int, String)] of
                              ((i, s'):_) -> [(FixedAmount i, s')]
                              otherwise   -> []
+
+displayAmount :: Amount -> String
+displayAmount Variable = "?"
+displayAmount (FixedAmount n) = show n
 
 {- | The categories that a card can belong to. There are more categories than
 these, such as "Knight" and "Ruin", but these are not relevant to choosing sets

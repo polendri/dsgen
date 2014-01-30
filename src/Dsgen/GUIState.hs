@@ -1,12 +1,21 @@
 module Dsgen.GUIState (
     GUI(..),
     GUIState(..),
+    CardListRow(..),
     readGUI,
     getGUIState,
-    mkSetSelectOptions
+    mkSetSelectOptions,
+    cardListAppend,
+    cardListRemove
     ) where
 
+import Control.Monad.Error
+import Control.Monad.Trans(liftIO)
 import Data.List((\\))
+import Graphics.UI.Gtk
+
+import Dsgen.Cards
+import Dsgen.SetSelect
 
 
 -- | Holds all the relevant widgets from the UI.
@@ -52,17 +61,18 @@ data GUI = GUI {
     sheltersAdditionComboBox    :: ComboBox,
 
     -- Card lists
-    randomCardsTreeModel :: TreeModel,
-    manualCardsTreeModel :: TreeModel,
-    vetoedCardsTreeModel :: TreeModel,
+    randomCardsListStore :: ListStore CardListRow,
+    manualCardsListStore :: ListStore CardListRow,
+    vetoedCardsListStore :: ListStore CardListRow,
 
     -- Buttons
     addManualCardButton :: Button,
-    rmvManualCardButton :: Button,
+    rmvManualCardsButton :: Button,
     keepCardsButton     :: Button,
     vetoCardsButton     :: Button,
     addVetoedCardButton :: Button,
-    rmvVetoedCardButton :: Button
+    rmvVetoedCardsButton :: Button,
+    selectSetButton :: Button
     }
 
 {- | Holds the state of all GUI widgets which we might be interested in
@@ -112,7 +122,13 @@ data GUIState = GUIState {
     randomCardsList :: [Card],
     manualCardsList :: [Card],
     vetoedCardsList :: [Card]
-    }
+    } deriving (Show)
+
+data CardListRow = CardListRow {
+    col1 :: String,
+    col2 :: String,
+    col3 :: String
+    } deriving (Show)
 
 -- | Create a 'GUI' object based on the contents of a Glade Builder.
 readGUI :: Builder -> IO GUI
@@ -144,34 +160,35 @@ readGUI b = do
     complexityFilterCBX <- liftIO $ builderGetObject b castToComboBox    "complexityFilterComboBox"
 
     -- Rules
-    costVarietyRuleCB   <- liftIO $ builderGetObject b castToCheckButton "costVarietyRuleCheckButton"
-    interactivityRuleCB <- liftIO $ builderGetObject b castToCheckButton "interactivityRuleCheckButton"
-    reactionRuleCB      <- liftIO $ builderGetObject b castToCheckButton "reactionRuleCheckButton"
-    reactionRuleCBX     <- liftIO $ builderGetObject b castToComboBox    "reactionRuleComboBox"
-    trasherRuleCB       <- liftIO $ builderGetObject b castToCheckButton "trasherRuleCheckButton"
-    trasherRuleCBX      <- liftIO $ builderGetObject b castToComboBox    "trasherRuleComboBox"
+    costVarietyRuleCB    <- liftIO $ builderGetObject b castToCheckButton "costVarietyRuleCheckButton"
+    interactivityRuleCB  <- liftIO $ builderGetObject b castToCheckButton "interactivityRuleCheckButton"
+    interactivityRuleCBX <- liftIO $ builderGetObject b castToComboBox    "interactivityRuleComboBox"
+    reactionRuleCB       <- liftIO $ builderGetObject b castToCheckButton "reactionRuleCheckButton"
+    reactionRuleCBX      <- liftIO $ builderGetObject b castToComboBox    "reactionRuleComboBox"
+    trasherRuleCB        <- liftIO $ builderGetObject b castToCheckButton "trasherRuleCheckButton"
+    trasherRuleCBX       <- liftIO $ builderGetObject b castToComboBox    "trasherRuleComboBox"
 
-    -- Additions
-    colPlatAdditionCB   <- liftIO $ builderGetObject b castToCheckButton "colPlatAdditionCheckButton"
-    sheltersAdditionCB  <- liftIO $ builderGetObject b castToCheckButton "sheltersAdditionCheckButton"
-    sheltersAdditionCBX <- liftIO $ builderGetObject b castToComboBox    "sheltersAdditionComboBox"
+    -- Addition s
+    colPlatAdditionCB    <- liftIO $ builderGetObject b castToCheckButton "colPlatAdditionCheckButton"
+    sheltersAdditionCB   <- liftIO $ builderGetObject b castToCheckButton "sheltersAdditionCheckButton"
+    sheltersAdditionCBX  <- liftIO $ builderGetObject b castToComboBox    "sheltersAdditionComboBox"
 
     -- Card lists
     randomCardsTreeView  <- liftIO $ builderGetObject b castToTreeView "randomCardsTreeView"
-    randomCardsTM <- getTreeModel randomCardsTreeView
+    randomCardsLS        <- liftIO $ cardListCreate randomCardsTreeView
     manualCardsTreeView  <- liftIO $ builderGetObject b castToTreeView "manualCardsTreeView"
-    manualCardsTM <- getTreeModel manualCardsTreeView
+    manualCardsLS        <- liftIO $ cardListCreate manualCardsTreeView
     vetoedCardsTreeView  <- liftIO $ builderGetObject b castToTreeView "vetoedCardsTreeView"
-    vetoedCardsTM <- getTreeModel vetoedCardsTreeView
+    vetoedCardsLS        <- liftIO $ cardListCreate vetoedCardsTreeView
 
     -- Buttons
-    addManualCardButton  <- liftIO $ builderGetObject b castToButton "addManualCardButton"
-    rmvManualCardsButton <- liftIO $ builderGetObject b castToButton "rmvManualCardsButton"
-    keepCardsButton      <- liftIO $ builderGetObject b castToButton "keepCardsButton"
-    vetoCardsButton      <- liftIO $ builderGetObject b castToButton "vetoCardsButton"
-    addVetoedCardButton  <- liftIO $ builderGetObject b castToButton "addVetoedCardButton"
-    rmvVetoedCardsButton <- liftIO $ builderGetObject b castToButton "rmvVetoedCardsButton"
-    selectSetButton      <- liftIO $ builderGetObject b castToButton "selectSetButton"
+    addManualCardB  <- liftIO $ builderGetObject b castToButton "addManualCardButton"
+    rmvManualCardsB <- liftIO $ builderGetObject b castToButton "rmvManualCardsButton"
+    keepCardsB      <- liftIO $ builderGetObject b castToButton "keepCardsButton"
+    vetoCardsB      <- liftIO $ builderGetObject b castToButton "vetoCardsButton"
+    addVetoedCardB  <- liftIO $ builderGetObject b castToButton "addVetoedCardButton"
+    rmvVetoedCardsB <- liftIO $ builderGetObject b castToButton "rmvVetoedCardsButton"
+    selectSetB      <- liftIO $ builderGetObject b castToButton "selectSetButton"
 
     return $ GUI {
         -- Sources
@@ -203,6 +220,7 @@ readGUI b = do
         -- Rules
         costVarietyRuleCheckButton   = costVarietyRuleCB,
         interactivityRuleCheckButton = interactivityRuleCB,
+        interactivityRuleComboBox    = interactivityRuleCBX,
         reactionRuleCheckButton      = reactionRuleCB,
         reactionRuleComboBox         = reactionRuleCBX,
         trasherRuleCheckButton       = trasherRuleCB,
@@ -211,16 +229,25 @@ readGUI b = do
         -- Additions
         colPlatAdditionCheckButton  = colPlatAdditionCB,
         sheltersAdditionCheckButton = sheltersAdditionCB,
-        sheltersAdditionComboBox    = sheltersAdditionCB,
+        sheltersAdditionComboBox    = sheltersAdditionCBX,
 
         -- Card lists
-        randomCardsTreeModel = randomCardsTM,
-        manualCardsTreeModel = manualCardsTM,
-        vetoedCardsTreeModel = vetoedCardTM
+        randomCardsListStore = randomCardsLS,
+        manualCardsListStore = manualCardsLS,
+        vetoedCardsListStore = vetoedCardsLS,
+
+        -- Buttons
+        addManualCardButton  = addManualCardB,
+        rmvManualCardsButton = rmvManualCardsB,
+        keepCardsButton      = keepCardsB,
+        vetoCardsButton      = vetoCardsB,
+        addVetoedCardButton  = addVetoedCardB,
+        rmvVetoedCardsButton = rmvVetoedCardsB,
+        selectSetButton      = selectSetB
         }
 
 -- | Create a 'GUIState' object based on the contents of a 'GUI' object.
-getGUIState :: GUI -> [Card] -> GUIState
+getGUIState :: GUI -> [Card] -> IO GUIState
 getGUIState gui cs = do
     -- Sources
     dominionCS      <- toggleButtonGetActive $ dominionCheckButton      gui
@@ -232,7 +259,7 @@ getGUIState gui cs = do
     hinterlandsCS   <- toggleButtonGetActive $ hinterlandsCheckButton   gui
     darkAgesCS      <- toggleButtonGetActive $ darkAgesCheckButton      gui
     guildsCS        <- toggleButtonGetActive $ guildsCheckButton        gui
-    envoyCS         <- toggleButtonGetActive $ envoyCheckbutton         gui
+    envoyCS         <- toggleButtonGetActive $ envoyCheckButton         gui
     blackMarketCS   <- toggleButtonGetActive $ blackMarketCheckButton   gui
     governorCS      <- toggleButtonGetActive $ governorCheckButton      gui
     stashCS         <- toggleButtonGetActive $ stashCheckButton         gui
@@ -263,12 +290,12 @@ getGUIState gui cs = do
     sheltersAdditionV  <- comboBoxGetActive     $ sheltersAdditionComboBox    gui
 
     -- Card lists
-    randomCardNames <- getAllCardNames $ randomCardsTreeModel gui
-    let randomCL    = filter (\c -> elem c randomCardNames) cs
-    manualCardNames <- getAllCardNames $ manualCardsTreeModel gui
-    let manualCL    = filter (\c -> elem c manualCardNames) cs
-    vetoedCardNames <- getAllCardNames $ vetoedCardsTreeModel gui
-    let vetoedCL    = filter (\c -> elem c vetoedCardNames) cs
+    randomCardNames <- getAllCardNames $ randomCardsListStore gui
+    let randomCL    = filter (\c -> elem (cardName c) randomCardNames) cs
+    manualCardNames <- getAllCardNames $ manualCardsListStore gui
+    let manualCL    = filter (\c -> elem (cardName c) manualCardNames) cs
+    vetoedCardNames <- getAllCardNames $ vetoedCardsListStore gui
+    let vetoedCL    = filter (\c -> elem (cardName c) vetoedCardNames) cs
 
     return $ GUIState {
         -- Sources
@@ -312,19 +339,19 @@ getGUIState gui cs = do
         sheltersAdditionValue        = sheltersAdditionV,
 
         -- Card lists
-        randomCardsList = randomCardsCL,
-        manualCardsList = manualCardsCL,
-        vetoedCardsList = vetoedCardsCL,
+        randomCardsList = randomCL,
+        manualCardsList = manualCL,
+        vetoedCardsList = vetoedCL
         }
 
 -- | Builds a 'SetSelectOptions' object based on the GUI state and a card pool.
 mkSetSelectOptions :: GUIState -> [Card] -> SetSelectOptions
 mkSetSelectOptions gst cs = SetSelectOptions {
-    ssoPickCount        = 10 - (length manualCards) -- TODO: Non-hardcode 10
-    ssoSelectPool       = cs \\ manualCards \\ (vetoedCardsList gst),
+    ssoPickCount        = 10 - (length manualCards), -- TODO: Non-hardcode 10
+    ssoPool             = (cs \\ manualCards) \\ (vetoedCardsList gst),
     ssoManualPicks      = manualCards,
     ssoSources          = sources,
-    sssoEmphasis        = emphasis,
+    ssoEmphasis         = emphasis,
     ssoFilters          = filters,
     ssoRules            = rules,
     ssoColPlatAddition  = colPlat,
@@ -381,10 +408,10 @@ mkSetSelectOptions gst cs = SetSelectOptions {
              then [costVarietyRule]
              else [])
             ]
-        colPlat = if ColPlatAdditionCheckedState gst then RandomColPlat else NoColPlat
-        shelters = if not $ guiSheltersAdditionCheckedState gst
+        colPlat = if colPlatAdditionCheckedState gst then RandomColPlat else NoColPlat
+        shelters = if not $ sheltersAdditionCheckedState gst
                    then NoShelters
-                   else case guiSheltersAdditionValue gst of
+                   else case sheltersAdditionValue gst of
                        0 -> SheltersWithDarkAges
                        1 -> RandomShelters
         convertComplexityFilterValue v = case v of
@@ -398,27 +425,54 @@ mkSetSelectOptions gst cs = SetSelectOptions {
         convertTrasherRuleValue v = case v of
             0 -> TrasherWithCurse
             1 -> AlwaysTrasher
-        convertTrasherRuleValue v = v + 1
+        convertInteractivityRuleValue v = v + 1
 
+cardListCreate :: TreeView -> IO (ListStore CardListRow)
+cardListCreate tv = do
+    lst <- listStoreNew ([] :: [CardListRow])
+    addColumn tv lst col1 "Name"
+    addColumn tv lst col2 "Cost"
+    addColumn tv lst col3 "Source"
+    treeViewSetModel tv lst
+    return lst
+  where addColumn tv lst f name = do
+            col <- treeViewColumnNew
+            rend <- cellRendererTextNew
+            treeViewColumnSetTitle col name
+            treeViewColumnPackStart col rend True
+            cellLayoutSetAttributes col rend lst (\row -> [ cellText := f row ])
+            treeViewColumnSetExpand col True
+            treeViewAppendColumn tv col
+
+cardListAppend :: ListStore CardListRow -> Card -> IO ()
+cardListAppend lst c = do
+    listStoreAppend lst $ CardListRow {
+        col1 = cardName c,
+        col2 = show (cardCost c),
+        col3 = show (cardSource c)
+        }
+    return ()
+
+cardListRemove :: ListStore CardListRow -> Int -> IO ()
+cardListRemove lst n = do
+    listStoreRemove lst n
+    return ()
 
 {- Helper functions -}
 
 -- | Gets all strings in the first column of a 'TreeModel'.
-getAllCardNames :: TreeModelClass self => self -> IO [String]
-getAllCardNames tm = getAllValues tm =<< (treeModelGetIterFirst tm)
-  where getAllValues tm iterm =
-            case iterm of
-                Nothing -> return []
-                Just iter -> do
-                    val <- treeModelGetValue tm iter (makeColumnIdString 0)
-                    iterm' <- treeModelIterNext tm iter
-                    liftM (val:) (getAllValues tm iterm')
+getAllCardNames :: ListStore CardListRow -> IO [String]
+getAllCardNames lst = do
+    size <- listStoreGetSize lst
+    getAllValues size 0
+  where getAllValues n i =
+            if i >= n - 1 then return [] else do
+                val <- listStoreGetValue lst i
+                liftM ((col1 val) :) (getAllValues n (i+1))
 
 -- | Gets a 'TreeModel' from a 'TreeView', throwing an error if no model exists.
-getTreeModel :: TreeViewClass self => self -> ErrorT String IO TreeModel
+getTreeModel :: TreeViewClass self => self -> IO TreeModel
 getTreeModel tv = do
-    tmm <- liftIO $ treeViewGetModel tv
-    case tmm of
-        Nothing -> throwError "No model defined for TreeView"
-        Just tm -> return tm
+    tmm <- treeViewGetModel tv
+    return $ maybe (error "No model defined for TreeView") id tmm
 

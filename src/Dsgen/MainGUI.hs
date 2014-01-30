@@ -1,7 +1,5 @@
 import Control.Monad.Error
 import Control.Monad.Trans(liftIO)
-import qualified Data.Foldable as F
-import Data.List
 import Graphics.UI.Gtk
 import System.Random
 
@@ -17,7 +15,7 @@ main = do
     builder <- builderNew
     gladeFilepath <- getDataFileName "res/gui/gui.glade"
     builderAddFromFile builder gladeFilepath
-    window <- builderGetObject builder castToWindow "dsgenWindow"
+    window <- builderGetObject builder castToWindow "mainWindow"
     on window deleteEvent (liftIO mainQuit >> return False)
 
     -- Get widgets
@@ -30,29 +28,33 @@ main = do
         Left s -> startupErrorQuit $ show s
         Right cs -> do
             -- Hook up signals
-            on selectSetButton buttonActivated $ fillSelection builder selectedCardsTreeModel cs
+            hookSignals gui cs
 
+            -- Start the GUI loop
             widgetShowAll window
             mainGUI
 
-fillSelection :: TreeModelClass self => Builder -> self -> [Card] -> IO ()
-fillSelection b tm cs = do
-    listStoreAppend tm "woo" -- TODO
-{-
-    runErrorT $ do
-        gst <- readGUIState b
-        let ssos = toSetSelectOptions gst
-        return $ displayCardOutput tv $ setKingdomCards $ selectSet ssos cs
+hookSignals :: GUI -> [Card] -> IO ()
+hookSignals gui cs = do
+    on (selectSetButton gui) buttonActivated $ fillSelection gui cs
+    return ()
+
+fillSelection :: GUI -> [Card] -> IO ()
+fillSelection gui cs = do
+    gst <- getGUIState gui cs
+    let ssos = mkSetSelectOptions gst cs
+    sgre <- runErrorT $ selectSet ssos
     case sgre of
-        Left e -> displayOutput tv e
-        Right sgr -> displayCardOutput tv $ setKingdomCards sgr
+        Left e -> putStrLn e -- TODO: use status bar!
+        Right sgr -> let lst = randomCardsListStore gui in do
+            listStoreClear lst
+            mapM_ (cardListAppend lst) (ssrKingdomCards sgr)
 
 -- | Displays text in a TextView.
 displayOutput :: TextView -> String -> IO ()
 displayOutput tv s = do
     buf <- textViewGetBuffer tv
     textBufferSetText buf s
--}
 
 {- | Displays an error messagebox and then immediately ends the program once
 the box has been dismissed -}

@@ -8,8 +8,7 @@ module Dsgen.SetSelect
     ReactionRuleOption(..),
     TrasherRuleOption(..),
     Addition,
-    ColonyAdditionOption(..),
-    PlatinumAdditionOption(..),
+    ColPlatAdditionOption(..),
     SheltersAdditionOption(..),
     SetSelectOptions(..),
     SetSelectResult(..),
@@ -27,8 +26,7 @@ module Dsgen.SetSelect
     mkEmphasisRule,
 
     -- * Additions
-    colonyAddition,
-    platinumAddition,
+    colPlatAddition,
     sheltersAddition,
 
     -- * Set selection functions

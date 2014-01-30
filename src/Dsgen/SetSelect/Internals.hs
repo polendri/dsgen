@@ -4,7 +4,7 @@ import Control.Monad(liftM)
 import Control.Monad.Error
 import Control.Monad.Trans(liftIO)
 import Data.Array.IO
-import Data.List((\\))
+import Data.List((\\), sort)
 import System.Random
 
 import Dsgen.Cards
@@ -185,21 +185,21 @@ additions such as Colonies or Shelters. -}
 selectSet :: SetSelectOptions -- ^ Defines options for how to select a list.
           -> ErrorT SetSelectError IO SetSelectResult
 selectSet ssos = do
-    let rules  = ssRules ssos
-    let rules' = maybe rules (:rules) $ mkEmphasisRule (ssEmphasis ssos)
-    kcs <- if length (ssManualPicks ssos) >= ssPickCount ssos
+    let rules  = ssoRules ssos
+    let rules' = maybe rules (:rules) $ mkEmphasisRule (ssoEmphasis ssos)
+    kcs <- if length (ssoManualPicks ssos) >= ssoPickCount ssos
            then return []
-           else selectKingdomCards (ssPickCount ssos)
-                                   (ssPool ssos)
-                                   (ssManualPicks ssos)
-                                   (ssSources ssos)
-                                   (ssFilters ssos)
+           else selectKingdomCards (ssoPickCount ssos)
+                                   (ssoManualPicks ssos)
+                                   (ssoPool ssos)
+                                   (ssoSources ssos)
+                                   (ssoFilters ssos)
                                    rules'
-    useColPlat  <- liftIO $ colPlatAddition $ ssColPlatAddition ssos
-    useShelters <- liftIO $ sheltersAddition (ssSheltersAddition ssos) (ssEmphasis ssos == DarkAgesEmphasis)
+    useColPlat  <- liftIO $ colPlatAddition $ ssoColPlatAddition ssos
+    useShelters <- liftIO $ sheltersAddition (ssoSheltersAddition ssos) (ssoEmphasis ssos == DarkAgesEmphasis)
 
     return SetSelectResult {
-        ssrKingdomCards = kcs,
+        ssrKingdomCards = sort kcs,
         ssrUsesColPlat  = useColPlat,
         ssrUsesShelters = useShelters
     }
@@ -225,7 +225,7 @@ selectKingdomCards n cs pool ss fs rs = do
                        " cards left after filtering."
      else do
          cards <- liftIO $ shuffle filtered
-         let pared = fullyPareSet rs cs cards
+         let pared = fullyPareSet n rs cs cards
          case pared of
              Left s -> throwError s
              Right cs' -> if length cs' > n
@@ -240,7 +240,7 @@ and returns the cards chosen. -}
 fullyPareSet :: Int -> [Rule] -> [Card] -> [Card] -> Either String [Card]
 fullyPareSet n rs pcs cs
     | length cs <= n = Right cs
-    | otherwise      = pareSet rs pcs cs >>= fullyPareSet rs pcs
+    | otherwise      = pareSet rs pcs cs >>= fullyPareSet n rs pcs
 
 {- | Removes one card from a list of cards, such that the provided list of
 rules are all still satisfied by the new, smaller list. -}
