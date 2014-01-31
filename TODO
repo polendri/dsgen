@@ -1,9 +1,9 @@
-* Hook up the card count dropdown to the backend
-* Card adding for manual/vetoed
-* Drag-and-drop between card lists
-* Custom filters/rules
-* Save/load options
-* Distinguish between "can trash anything" and "can trash certain types of cards"
-* Change the CurseTrasher rule such that it requires an anything-trasher
-* Add a stricter card variety rule
+1   Hook up the card count dropdown to the backend
+2   Card adding for manual/vetoed
+3   Drag-and-drop between card lists
+4   Custom filters/rules
+5   Save/load options
+6   Distinguish between "can trash anything" and "can trash certain types of cards"
+7   Change the CurseTrasher rule such that it requires an anything-trasher
+8   Add a stricter card variety rule
 
