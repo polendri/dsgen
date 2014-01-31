@@ -182,8 +182,7 @@ sheltersAddition sa da =
 {- | Chooses cards to supplement an initial list of cards such that it
 contains 10 cards total and satisfies all provided rules. Also decides on
 additions such as Colonies or Shelters. -}
-selectSet :: SetSelectOptions -- ^ Defines options for how to select a list.
-          -> ErrorT SetSelectError IO SetSelectResult
+selectSet :: SetSelectOptions -> ErrorT SetSelectError IO SetSelectResult
 selectSet ssos = do
     let rules  = ssoRules ssos
     let rules' = maybe rules (:rules) $ mkEmphasisRule (ssoEmphasis ssos)

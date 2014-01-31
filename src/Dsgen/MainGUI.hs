@@ -1,5 +1,6 @@
 import Control.Monad.Error
 import Control.Monad.Trans(liftIO)
+import Data.List(sort)
 import Graphics.UI.Gtk
 import System.Random
 
@@ -20,6 +21,7 @@ main = do
 
     -- Get widgets
     gui <- readGUI builder
+    initializeGUI gui
 
     -- Load cards
     cardFiles <- cardFileNames
@@ -37,18 +39,53 @@ main = do
 hookSignals :: GUI -> [Card] -> IO ()
 hookSignals gui cs = do
     on (selectSetButton gui) buttonActivated $ fillSelection gui cs
+    on (keepCardsButton gui) buttonActivated $ moveCards (randomCardsTreeView gui)
+                                                         (randomCardsListStore gui)
+                                                         (manualCardsListStore gui)
+    on (vetoCardsButton gui) buttonActivated $ moveCards (randomCardsTreeView gui)
+                                                         (randomCardsListStore gui)
+                                                         (vetoedCardsListStore gui)
+    on (rmvManualCardsButton gui) buttonActivated $ removeCards (manualCardsTreeView gui)
+                                                                (manualCardsListStore gui)
+    on (rmvVetoedCardsButton gui) buttonActivated $ removeCards (vetoedCardsTreeView gui)
+                                                                (vetoedCardsListStore gui)
     return ()
 
+-- | Generate a random selection of cards and display it
 fillSelection :: GUI -> [Card] -> IO ()
 fillSelection gui cs = do
+    notebookSetCurrentPage (mainNotebook gui) 1
     gst <- getGUIState gui cs
     let ssos = mkSetSelectOptions gst cs
     sgre <- runErrorT $ selectSet ssos
     case sgre of
         Left e -> putStrLn e -- TODO: use status bar!
-        Right sgr -> let lst = randomCardsListStore gui in do
+        Right sgr -> do
+            let lst = randomCardsListStore gui
             listStoreClear lst
             mapM_ (cardListAppend lst) (ssrKingdomCards sgr)
+            labelSetText (colPlatLabel gui)  (if ssrUsesColPlat sgr then "Yes" else "No")
+            labelSetText (sheltersLabel gui) (if ssrUsesShelters sgr then "Yes" else "No")
+
+-- | Move selected cards from a 'TreeView' to another 'ListStore'
+moveCards :: TreeViewClass self => self -> ListStore CardListRow -> ListStore CardListRow -> IO ()
+moveCards tv1 ls1 ls2 = do
+    ts <- treeViewGetSelection tv1
+    selectionList <- treeSelectionGetSelectedRows ts
+    let selectedRows = sort $ map head selectionList
+    selectedCards <- mapM (listStoreGetValue ls1) selectedRows
+    sequence_ $ map (listStoreAppend ls2) selectedCards
+    sequence_ $ map (listStoreRemove ls1) $ reverse $ selectedRows
+    treeSelectionUnselectAll ts
+
+-- | Remove selected cards from a 'TreeView' to another 'ListStore'
+removeCards :: TreeViewClass self => self -> ListStore CardListRow -> IO ()
+removeCards tv ls = do
+    ts <- treeViewGetSelection tv
+    selectionList <- treeSelectionGetSelectedRows ts
+    let selectedRows = sort $ map head selectionList
+    sequence_ $ map (listStoreRemove ls) $ reverse $ selectedRows
+    treeSelectionUnselectAll ts
 
 -- | Displays text in a TextView.
 displayOutput :: TextView -> String -> IO ()

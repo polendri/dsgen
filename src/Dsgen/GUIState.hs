@@ -3,6 +3,7 @@ module Dsgen.GUIState (
     GUIState(..),
     CardListRow(..),
     readGUI,
+    initializeGUI,
     getGUIState,
     mkSetSelectOptions,
     cardListAppend,
@@ -60,19 +61,27 @@ data GUI = GUI {
     sheltersAdditionCheckButton :: CheckButton,
     sheltersAdditionComboBox    :: ComboBox,
 
-    -- Card lists
+    -- Card lists and other output widgets
+    randomCardsTreeView  :: TreeView,
     randomCardsListStore :: ListStore CardListRow,
+    manualCardsTreeView  :: TreeView,
     manualCardsListStore :: ListStore CardListRow,
+    vetoedCardsTreeView  :: TreeView,
     vetoedCardsListStore :: ListStore CardListRow,
+    colPlatLabel         :: Label,
+    sheltersLabel        :: Label,
 
     -- Buttons
-    addManualCardButton :: Button,
+    addManualCardButton  :: Button,
     rmvManualCardsButton :: Button,
-    keepCardsButton     :: Button,
-    vetoCardsButton     :: Button,
-    addVetoedCardButton :: Button,
+    keepCardsButton      :: Button,
+    vetoCardsButton      :: Button,
+    addVetoedCardButton  :: Button,
     rmvVetoedCardsButton :: Button,
-    selectSetButton :: Button
+    selectSetButton      :: Button,
+
+    -- Containers
+    mainNotebook :: Notebook
     }
 
 {- | Holds the state of all GUI widgets which we might be interested in
@@ -173,13 +182,15 @@ readGUI b = do
     sheltersAdditionCB   <- liftIO $ builderGetObject b castToCheckButton "sheltersAdditionCheckButton"
     sheltersAdditionCBX  <- liftIO $ builderGetObject b castToComboBox    "sheltersAdditionComboBox"
 
-    -- Card lists
-    randomCardsTreeView  <- liftIO $ builderGetObject b castToTreeView "randomCardsTreeView"
-    randomCardsLS        <- liftIO $ cardListCreate randomCardsTreeView
-    manualCardsTreeView  <- liftIO $ builderGetObject b castToTreeView "manualCardsTreeView"
-    manualCardsLS        <- liftIO $ cardListCreate manualCardsTreeView
-    vetoedCardsTreeView  <- liftIO $ builderGetObject b castToTreeView "vetoedCardsTreeView"
-    vetoedCardsLS        <- liftIO $ cardListCreate vetoedCardsTreeView
+    -- Card lists and other output widgets
+    randomCardsTV <- liftIO $ builderGetObject b castToTreeView "randomCardsTreeView"
+    randomCardsLS <- liftIO $ cardListCreate randomCardsTV
+    manualCardsTV <- liftIO $ builderGetObject b castToTreeView "manualCardsTreeView"
+    manualCardsLS <- liftIO $ cardListCreate manualCardsTV
+    vetoedCardsTV <- liftIO $ builderGetObject b castToTreeView "vetoedCardsTreeView"
+    vetoedCardsLS <- liftIO $ cardListCreate vetoedCardsTV
+    colPlatL      <- liftIO $ builderGetObject b castToLabel "colPlatLabel"
+    sheltersL     <- liftIO $ builderGetObject b castToLabel "sheltersLabel"
 
     -- Buttons
     addManualCardB  <- liftIO $ builderGetObject b castToButton "addManualCardButton"
@@ -189,6 +200,9 @@ readGUI b = do
     addVetoedCardB  <- liftIO $ builderGetObject b castToButton "addVetoedCardButton"
     rmvVetoedCardsB <- liftIO $ builderGetObject b castToButton "rmvVetoedCardsButton"
     selectSetB      <- liftIO $ builderGetObject b castToButton "selectSetButton"
+
+    -- Containers
+    mainNB <- liftIO $ builderGetObject b castToNotebook "mainNotebook"
 
     return $ GUI {
         -- Sources
@@ -231,10 +245,15 @@ readGUI b = do
         sheltersAdditionCheckButton = sheltersAdditionCB,
         sheltersAdditionComboBox    = sheltersAdditionCBX,
 
-        -- Card lists
+        -- Card lists and other output widgets
+        randomCardsTreeView  = randomCardsTV,
         randomCardsListStore = randomCardsLS,
+        manualCardsTreeView  = manualCardsTV,
         manualCardsListStore = manualCardsLS,
+        vetoedCardsTreeView  = vetoedCardsTV,
         vetoedCardsListStore = vetoedCardsLS,
+        colPlatLabel         = colPlatL,
+        sheltersLabel        = sheltersL,
 
         -- Buttons
         addManualCardButton  = addManualCardB,
@@ -243,8 +262,25 @@ readGUI b = do
         vetoCardsButton      = vetoCardsB,
         addVetoedCardButton  = addVetoedCardB,
         rmvVetoedCardsButton = rmvVetoedCardsB,
-        selectSetButton      = selectSetB
+        selectSetButton      = selectSetB,
+
+        -- Containers
+        mainNotebook = mainNB
         }
+
+-- | Perform some initial configuration to a GUI
+initializeGUI :: GUI -> IO ()
+initializeGUI gui = do
+    rtv <- treeViewGetSelection $ randomTreeView
+    treeSelectionSetMode rtv SelectionMultiple
+    mtv <- treeViewGetSelection $ manualTreeView
+    treeSelectionSetMode mtv SelectionMultiple
+    vtv <- treeViewGetSelection $ vetoedTreeView
+    treeSelectionSetMode vtv SelectionMultiple
+    return ()
+  where randomTreeView = randomCardsTreeView gui
+        manualTreeView = manualCardsTreeView gui
+        vetoedTreeView = vetoedCardsTreeView gui
 
 -- | Create a 'GUIState' object based on the contents of a 'GUI' object.
 getGUIState :: GUI -> [Card] -> IO GUIState
@@ -448,7 +484,7 @@ cardListAppend :: ListStore CardListRow -> Card -> IO ()
 cardListAppend lst c = do
     listStoreAppend lst $ CardListRow {
         col1 = cardName c,
-        col2 = show (cardCost c),
+        col2 = displayAmount (cardCost c),
         col3 = show (cardSource c)
         }
     return ()
@@ -466,7 +502,7 @@ getAllCardNames lst = do
     size <- listStoreGetSize lst
     getAllValues size 0
   where getAllValues n i =
-            if i >= n - 1 then return [] else do
+            if i >= n then return [] else do
                 val <- listStoreGetValue lst i
                 liftM ((col1 val) :) (getAllValues n (i+1))
 

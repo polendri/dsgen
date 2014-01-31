@@ -1,11 +1,9 @@
-High:
- * Refactor GUI code to load all widgets from the builder just once
-
-Medium:
- * Distinguish between "can trash anything" and "can trash certain types of cards"
- * Change the CurseTrasher rule such that it requires an anything-trasher
- * Add a number dropdown to the interactivity rule
-
-Low:
- * Add a stricter card variety rule
+* Hook up the card count dropdown to the backend
+* Card adding for manual/vetoed
+* Drag-and-drop between card lists
+* Custom filters/rules
+* Save/load options
+* Distinguish between "can trash anything" and "can trash certain types of cards"
+* Change the CurseTrasher rule such that it requires an anything-trasher
+* Add a stricter card variety rule
 

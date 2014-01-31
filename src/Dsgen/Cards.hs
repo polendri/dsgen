@@ -13,6 +13,7 @@ module Dsgen.Cards
     readCardFiles, readCardFile, readCard,
 
     -- * Utility Functions
+    displayAmount,
     showCardName
     ) where
 
@@ -73,10 +74,6 @@ instance Read Amount where
                              ((i, s'):_) -> [(FixedAmount i, s')]
                              otherwise   -> []
 
-displayAmount :: Amount -> String
-displayAmount Variable = "?"
-displayAmount (FixedAmount n) = show n
-
 {- | The categories that a card can belong to. There are more categories than
 these, such as "Knight" and "Ruin", but these are not relevant to choosing sets
 of Kingdom cards. -}
@@ -105,6 +102,11 @@ complicated it is to follow the instructions of a card. Roughly speaking,
 -}
 data CardComplexity = Low | Medium | High
     deriving (Eq, Ord, Read, Show)
+
+-- | Formats an 'Amount' as a pretty string
+displayAmount :: Amount -> String
+displayAmount Variable = "?"
+displayAmount (FixedAmount n) = show n
 
 {- | Given a card, returns a string containing the card's name followed by its
 source (in brackets) -}
