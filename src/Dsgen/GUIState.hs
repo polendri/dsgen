@@ -70,12 +70,13 @@ data GUI = GUI {
     colPlatLabel         :: Label,
     sheltersLabel        :: Label,
 
-    -- Buttons
+    -- Output window input widgets
     addManualCardButton  :: Button,
     rmvManualCardsButton :: Button,
     addVetoedCardButton  :: Button,
     rmvVetoedCardsButton :: Button,
     selectSetButton      :: Button,
+    pickCountComboBox    :: ComboBox,
 
     -- Containers
     mainNotebook :: Notebook
@@ -127,7 +128,10 @@ data GUIState = GUIState {
     -- Card lists
     randomCardsList :: [Card],
     manualCardsList :: [Card],
-    vetoedCardsList :: [Card]
+    vetoedCardsList :: [Card],
+
+    -- Pick count
+    pickCountValue :: Int
     } deriving (Show)
 
 data CardListRow = CardListRow {
@@ -174,7 +178,7 @@ readGUI b = do
     trasherRuleCB        <- liftIO $ builderGetObject b castToCheckButton "trasherRuleCheckButton"
     trasherRuleCBX       <- liftIO $ builderGetObject b castToComboBox    "trasherRuleComboBox"
 
-    -- Addition s
+    -- Additions
     colPlatAdditionCB    <- liftIO $ builderGetObject b castToCheckButton "colPlatAdditionCheckButton"
     sheltersAdditionCB   <- liftIO $ builderGetObject b castToCheckButton "sheltersAdditionCheckButton"
     sheltersAdditionCBX  <- liftIO $ builderGetObject b castToComboBox    "sheltersAdditionComboBox"
@@ -189,12 +193,13 @@ readGUI b = do
     colPlatL      <- liftIO $ builderGetObject b castToLabel "colPlatLabel"
     sheltersL     <- liftIO $ builderGetObject b castToLabel "sheltersLabel"
 
-    -- Buttons
-    addManualCardB  <- liftIO $ builderGetObject b castToButton "addManualCardButton"
-    rmvManualCardsB <- liftIO $ builderGetObject b castToButton "rmvManualCardsButton"
-    addVetoedCardB  <- liftIO $ builderGetObject b castToButton "addVetoedCardButton"
-    rmvVetoedCardsB <- liftIO $ builderGetObject b castToButton "rmvVetoedCardsButton"
-    selectSetB      <- liftIO $ builderGetObject b castToButton "selectSetButton"
+    -- Output window input widgets
+    addManualCardB  <- liftIO $ builderGetObject b castToButton   "addManualCardButton"
+    rmvManualCardsB <- liftIO $ builderGetObject b castToButton   "rmvManualCardsButton"
+    addVetoedCardB  <- liftIO $ builderGetObject b castToButton   "addVetoedCardButton"
+    rmvVetoedCardsB <- liftIO $ builderGetObject b castToButton   "rmvVetoedCardsButton"
+    selectSetB      <- liftIO $ builderGetObject b castToButton   "selectSetButton"
+    pickCountCBX    <- liftIO $ builderGetObject b castToComboBox "pickCountComboBox"
 
     -- Containers
     mainNB <- liftIO $ builderGetObject b castToNotebook "mainNotebook"
@@ -250,12 +255,13 @@ readGUI b = do
         colPlatLabel         = colPlatL,
         sheltersLabel        = sheltersL,
 
-        -- Buttons
+        -- Output window input widgets
         addManualCardButton  = addManualCardB,
         rmvManualCardsButton = rmvManualCardsB,
         addVetoedCardButton  = addVetoedCardB,
         rmvVetoedCardsButton = rmvVetoedCardsB,
         selectSetButton      = selectSetB,
+        pickCountComboBox    = pickCountCBX,
 
         -- Containers
         mainNotebook = mainNB
@@ -312,6 +318,9 @@ getGUIState gui cs = do
     vetoedCardNames <- getAllCardNames $ vetoedCardsListStore gui
     let vetoedCL    = filter (\c -> elem (cardName c) vetoedCardNames) cs
 
+    -- Pick count
+    pickCountV <- comboBoxGetActive $ pickCountComboBox gui
+
     return $ GUIState {
         -- Sources
         dominionCheckedState      = dominionCS,
@@ -356,13 +365,16 @@ getGUIState gui cs = do
         -- Card lists
         randomCardsList = randomCL,
         manualCardsList = manualCL,
-        vetoedCardsList = vetoedCL
+        vetoedCardsList = vetoedCL,
+
+        -- Pick count
+        pickCountValue = pickCountV
         }
 
 -- | Builds a 'SetSelectOptions' object based on the GUI state and a card pool.
 mkSetSelectOptions :: GUIState -> [Card] -> SetSelectOptions
 mkSetSelectOptions gst cs = SetSelectOptions {
-    ssoPickCount        = 10 - (length manualCards), -- TODO: Non-hardcode 10
+    ssoPickCount        = pickCount - (length manualCards), -- TODO: Non-hardcode 10
     ssoPool             = (cs \\ manualCards) \\ (vetoedCardsList gst),
     ssoManualPicks      = manualCards,
     ssoSources          = sources,
@@ -372,7 +384,8 @@ mkSetSelectOptions gst cs = SetSelectOptions {
     ssoColPlatAddition  = colPlat,
     ssoSheltersAddition = shelters
     }
-  where manualCards = manualCardsList gst
+  where pickCount = (pickCountValue gst) + 8
+        manualCards = manualCardsList gst
         sources = concat [
             (if dominionCheckedState      gst then [Dominion]           else []),
             (if intrigueCheckedState      gst then [Intrigue]           else []),
