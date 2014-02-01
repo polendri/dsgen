@@ -115,73 +115,6 @@
       </row>
     </data>
   </object>
-  <object class="GtkImage" id="keepCardsImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-redo</property>
-  </object>
-  <object class="GtkListStore" id="pickCountListStore">
-    <columns>
-      <!-- column-name gint1 -->
-      <column type="gint"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0">8</col>
-      </row>
-      <row>
-        <col id="0">9</col>
-      </row>
-      <row>
-        <col id="0">10</col>
-      </row>
-      <row>
-        <col id="0">11</col>
-      </row>
-      <row>
-        <col id="0">12</col>
-      </row>
-      <row>
-        <col id="0">13</col>
-      </row>
-      <row>
-        <col id="0">14</col>
-      </row>
-      <row>
-        <col id="0">15</col>
-      </row>
-      <row>
-        <col id="0">16</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="reactionRuleListStore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Moat</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">an attack blocker</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">a reaction card</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkImage" id="removeManualCardsImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-remove</property>
-  </object>
-  <object class="GtkImage" id="removeVetoedCardsImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-remove</property>
-  </object>
   <object class="GtkWindow" id="mainWindow">
     <property name="width_request">800</property>
     <property name="can_focus">False</property>
@@ -1366,7 +1299,6 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="search_column">0</property>
-                                    <property name="rubber_banding">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -1456,70 +1388,10 @@
                             <property name="can_focus">False</property>
                             <property name="left_padding">12</property>
                             <child>
-                              <object class="GtkBox" id="randomCardsBox">
+                              <object class="GtkTreeView" id="randomCardsTreeView">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="orientation">vertical</property>
-                                <child>
-                                  <object class="GtkTreeView" id="randomCardsTreeView">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="search_column">0</property>
-                                    <property name="rubber_banding">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="padding">5</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkBox" id="randomCardsButtonBox">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <child>
-                                      <object class="GtkButton" id="keepCardsButton">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="receives_default">True</property>
-                                        <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Keep the selected card(s)</property>
-                                        <property name="tooltip_text" translatable="yes">Keep the selected card(s)</property>
-                                        <property name="image">keepCardsImage</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="pack_type">end</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkButton" id="vetoCardsButton">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="receives_default">True</property>
-                                        <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Keep the selected card(s)</property>
-                                        <property name="tooltip_text" translatable="yes">Keep the selected card(s)</property>
-                                        <property name="image">vetoCardsImage</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="pack_type">end</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="padding">2</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
+                                <property name="can_focus">True</property>
+                                <property name="search_column">0</property>
                               </object>
                             </child>
                           </object>
@@ -1562,7 +1434,6 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="search_column">0</property>
-                                    <property name="rubber_banding">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -1854,6 +1725,68 @@ they will still count towards rules and the total card count.</property>
       </object>
     </child>
   </object>
+  <object class="GtkListStore" id="pickCountListStore">
+    <columns>
+      <!-- column-name gint1 -->
+      <column type="gint"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">8</col>
+      </row>
+      <row>
+        <col id="0">9</col>
+      </row>
+      <row>
+        <col id="0">10</col>
+      </row>
+      <row>
+        <col id="0">11</col>
+      </row>
+      <row>
+        <col id="0">12</col>
+      </row>
+      <row>
+        <col id="0">13</col>
+      </row>
+      <row>
+        <col id="0">14</col>
+      </row>
+      <row>
+        <col id="0">15</col>
+      </row>
+      <row>
+        <col id="0">16</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="reactionRuleListStore">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Moat</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">an attack blocker</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">a reaction card</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkImage" id="removeManualCardsImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-remove</property>
+  </object>
+  <object class="GtkImage" id="removeVetoedCardsImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-remove</property>
+  </object>
   <object class="GtkImage" id="saveOptionsAsImage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -1896,10 +1829,5 @@ they will still count towards rules and the total card count.</property>
         <col id="0" translatable="yes">always</col>
       </row>
     </data>
-  </object>
-  <object class="GtkImage" id="vetoCardsImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-undo</property>
   </object>
 </interface>

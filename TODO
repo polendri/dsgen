@@ -1,6 +1,5 @@
 1   Hook up the card count dropdown to the backend
 2   Card adding for manual/vetoed
-3   Drag-and-drop between card lists
 4   Custom filters/rules
 5   Save/load options
 6   Distinguish between "can trash anything" and "can trash certain types of cards"

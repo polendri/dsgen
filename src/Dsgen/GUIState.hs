@@ -3,7 +3,6 @@ module Dsgen.GUIState (
     GUIState(..),
     CardListRow(..),
     readGUI,
-    initializeGUI,
     getGUIState,
     mkSetSelectOptions,
     cardListAppend,
@@ -12,7 +11,7 @@ module Dsgen.GUIState (
 
 import Control.Monad.Error
 import Control.Monad.Trans(liftIO)
-import Data.List((\\))
+import Data.List((\\), sort)
 import Graphics.UI.Gtk
 
 import Dsgen.Cards
@@ -74,8 +73,6 @@ data GUI = GUI {
     -- Buttons
     addManualCardButton  :: Button,
     rmvManualCardsButton :: Button,
-    keepCardsButton      :: Button,
-    vetoCardsButton      :: Button,
     addVetoedCardButton  :: Button,
     rmvVetoedCardsButton :: Button,
     selectSetButton      :: Button,
@@ -137,7 +134,7 @@ data CardListRow = CardListRow {
     col1 :: String,
     col2 :: String,
     col3 :: String
-    } deriving (Show)
+    } deriving (Read, Show)
 
 -- | Create a 'GUI' object based on the contents of a Glade Builder.
 readGUI :: Builder -> IO GUI
@@ -195,8 +192,6 @@ readGUI b = do
     -- Buttons
     addManualCardB  <- liftIO $ builderGetObject b castToButton "addManualCardButton"
     rmvManualCardsB <- liftIO $ builderGetObject b castToButton "rmvManualCardsButton"
-    keepCardsB      <- liftIO $ builderGetObject b castToButton "keepCardsButton"
-    vetoCardsB      <- liftIO $ builderGetObject b castToButton "vetoCardsButton"
     addVetoedCardB  <- liftIO $ builderGetObject b castToButton "addVetoedCardButton"
     rmvVetoedCardsB <- liftIO $ builderGetObject b castToButton "rmvVetoedCardsButton"
     selectSetB      <- liftIO $ builderGetObject b castToButton "selectSetButton"
@@ -258,8 +253,6 @@ readGUI b = do
         -- Buttons
         addManualCardButton  = addManualCardB,
         rmvManualCardsButton = rmvManualCardsB,
-        keepCardsButton      = keepCardsB,
-        vetoCardsButton      = vetoCardsB,
         addVetoedCardButton  = addVetoedCardB,
         rmvVetoedCardsButton = rmvVetoedCardsB,
         selectSetButton      = selectSetB,
@@ -267,20 +260,6 @@ readGUI b = do
         -- Containers
         mainNotebook = mainNB
         }
-
--- | Perform some initial configuration to a GUI
-initializeGUI :: GUI -> IO ()
-initializeGUI gui = do
-    rtv <- treeViewGetSelection $ randomTreeView
-    treeSelectionSetMode rtv SelectionMultiple
-    mtv <- treeViewGetSelection $ manualTreeView
-    treeSelectionSetMode mtv SelectionMultiple
-    vtv <- treeViewGetSelection $ vetoedTreeView
-    treeSelectionSetMode vtv SelectionMultiple
-    return ()
-  where randomTreeView = randomCardsTreeView gui
-        manualTreeView = manualCardsTreeView gui
-        vetoedTreeView = vetoedCardsTreeView gui
 
 -- | Create a 'GUIState' object based on the contents of a 'GUI' object.
 getGUIState :: GUI -> [Card] -> IO GUIState
@@ -504,7 +483,7 @@ getAllCardNames lst = do
   where getAllValues n i =
             if i >= n then return [] else do
                 val <- listStoreGetValue lst i
-                liftM ((col1 val) :) (getAllValues n (i+1))
+                ((col1 val) :) `liftM` (getAllValues n (i+1))
 
 -- | Gets a 'TreeModel' from a 'TreeView', throwing an error if no model exists.
 getTreeModel :: TreeViewClass self => self -> IO TreeModel
